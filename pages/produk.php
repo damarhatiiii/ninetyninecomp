@@ -1,5 +1,12 @@
 <?php 
-include 'config/db.php';
+session_start();
+include '../config/db.php';
+
+// Pastikan user login dulu
+if (!isset($_SESSION['username'])) {
+    header('Location: ../auth/login.php');
+    exit;
+}
 
 // Jalankan query
 $query = "SELECT * FROM produk";
@@ -23,7 +30,7 @@ if (!$result) {
     </head>
 <body>
     <!-- Navbar -->
-    <?php include 'includes/navbar.php'; ?>
+    <?php include '../includes/navbar.php'; ?>
 
     <div class="relative overflow-x-auto shadow-md">
         <h2 class="text-2xl font-bold bg-gray-800 text-white p-5">
@@ -85,6 +92,6 @@ if (!$result) {
     </div>
 
     <!-- Footer -->
-    <?php include 'includes/footbar.php'; ?>
+    <?php include '../includes/footbar.php'; ?>
 </body>
 </html>

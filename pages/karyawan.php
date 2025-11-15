@@ -1,18 +1,10 @@
 <?php
-include 'config/db.php'; // <== Tambahkan ini dulu
-
-$result = mysqli_query($conn, "SELECT * FROM karyawan");
-?>
-<!-- Navbar -->
-<?php include 'includes\navbar.php'; ?>
-
-<?php
-include 'config/db.php';
 session_start();
+include '../config/db.php';
 
 // Pastikan user login dulu
 if (!isset($_SESSION['username'])) {
-    header('Location: login.php');
+    header('Location: ../auth/login.php');
     exit;
 }
 
@@ -25,8 +17,12 @@ $result = mysqli_query($conn, "SELECT * FROM karyawan");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Akun</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+    <!-- Navbar -->
+    <?php include '../includes/navbar.php'; ?>
+    
     <div class="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
     <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
         <div class="flex items-center justify-between border-b pb-3 mb-6">
@@ -71,6 +67,6 @@ $result = mysqli_query($conn, "SELECT * FROM karyawan");
     </div>
     </div>
         <!-- Footer -->
-    <?php include 'includes/footbar.php'; ?>
+    <?php include '../includes/footbar.php'; ?>
 </body>
 </html>

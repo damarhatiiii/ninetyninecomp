@@ -1,5 +1,12 @@
 <?php
-include 'config/db.php';
+session_start();
+include '../config/db.php';
+
+// Pastikan user login dulu
+if (!isset($_SESSION['username'])) {
+    header('Location: ../auth/login.php');
+    exit;
+}
 
 $nama = $_POST['nama'];
 $username = $_POST['username'];

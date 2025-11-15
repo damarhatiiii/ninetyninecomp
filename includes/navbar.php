@@ -9,8 +9,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     <nav class="bg-white border-gray-200 dark:bg-gray-900 shadow">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="dashboard.php" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <img src="assets/sssda.png" class="h-8" alt="NinetyNine Logo" />
+        <a href="../pages/dashboard.php" class="flex items-center space-x-3 rtl:space-x-reverse">
+        <img src="../assets/sssda.png" class="h-8" alt="NinetyNine Logo" />
         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
             NinetyNineComp
         </span>
@@ -37,7 +37,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
             <!-- Dashboard -->
             <li>
-            <a href="dashboard.php"
+            <a href="../pages/dashboard.php"
                 class="block py-2 px-3 rounded-sm md:p-0 
                 <?= $current_page == 'dashboard.php'
                     ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500'
@@ -48,7 +48,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
             <!-- Produk -->
             <li>
-            <a href="produk.php"
+            <a href="../pages/produk.php"
                 class="block py-2 px-3 rounded-sm md:p-0 
                 <?= $current_page == 'produk.php'
                     ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500'
@@ -57,9 +57,20 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </a>
             </li>
 
+            <!-- Aktifitas -->
+            <li>
+            <a href="../pages/aktifitas.php"
+                class="block py-2 px-3 rounded-sm md:p-0 
+                <?= in_array($current_page, ['aktifitas.php', 'transaksi.php', 'barang_masuk.php', 'barang_keluar.php', 'tambah_transaksi.php', 'tambah_barang_masuk.php', 'tambah_barang_keluar.php', 'detail_transaksi.php'])
+                    ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500'
+                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700'; ?>">
+                Aktifitas
+            </a>
+            </li>
+
             <!-- Tambah -->
             <li>
-            <a href="tambah.php"
+            <a href="../pages/tambah.php"
                 class="block py-2 px-3 rounded-sm md:p-0 
                 <?= $current_page == 'tambah.php'
                     ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500'
@@ -70,7 +81,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
             <!-- Akun -->
             <li>
-            <a href="karyawan.php"
+            <a href="../pages/karyawan.php"
                 class="block py-2 px-3 rounded-sm md:p-0 
                 <?= $current_page == 'karyawan.php'
                     ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500'

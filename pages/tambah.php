@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'config/db.php';
+include '../config/db.php';
 
 // Pastikan user sudah login
 if (!isset($_SESSION['username'])) {
-    header('Location: login.php');
+    header('Location: ../auth/login.php');
     exit;
 }
 
@@ -63,7 +63,7 @@ if (isset($_POST['simpan'])) {
 </head>
 <body class="bg-gray-100 dark:bg-gray-900">
 
-    <?php include 'includes/navbar.php'; ?>
+    <?php include '../includes/navbar.php'; ?>
     
 
     <div class="p-6 max-w-3xl mx-auto">
@@ -158,7 +158,7 @@ if (isset($_POST['simpan'])) {
         </div>
     </div>
 
-    <?php include 'includes/footbar.php'; ?>
+    <?php include '../includes/footbar.php'; ?>
 
 </body>
 </html>

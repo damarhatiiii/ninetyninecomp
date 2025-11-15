@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit;
     
 }
@@ -15,12 +15,12 @@ if (!isset($_SESSION['username'])) {
 </head>
 <body class="bg-gray-900 text-white">
 
-    <?php include 'includes/navbar.php'; ?>
+    <?php include '../includes/navbar.php'; ?>
 
     <main class="flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
         <h1 class="text-4xl font-bold">Halo, <?= $_SESSION['nama']; ?> 👋</h1>
     </main>
 
-    <?php include 'includes/footbar.php'; ?>
+    <?php include '../includes/footbar.php'; ?>
 </body>
 </html>

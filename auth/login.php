@@ -15,15 +15,29 @@
 
             <?php if (isset($_GET['error'])): ?>
                 <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
-                    Username atau password salah!
+                    ID Karyawan, Username, Nama, atau password salah!
+                </div>
+            <?php endif; ?>
+            
+            <?php
+            // Cek apakah ada user di database
+            include '../config/db.php';
+            $check = mysqli_query($conn, "SELECT COUNT(*) as total FROM karyawan");
+            $row = mysqli_fetch_assoc($check);
+            if ($row['total'] == 0): ?>
+                <div class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
+                    <strong>Belum ada user!</strong> 
+                    <a href="setup_user.php" class="underline text-blue-600">Buat user admin pertama</a>
                 </div>
             <?php endif; ?>
 
-            <form action="login_proses.php" method="POST" class="space-y-5">
+            <form action="login_poses.php" method="POST" class="space-y-5">
                 <div>
-                    <label class="text-sm font-medium">Username</label>
+                    <label class="text-sm font-medium">ID Karyawan / Username / Nama</label>
                     <input name="username" type="text" required
+                        placeholder="Masukkan ID, Username, atau Nama"
                         class="w-full p-2 border rounded mt-1">
+                    <p class="text-xs text-gray-500 mt-1">Anda bisa login menggunakan ID Karyawan, Username, atau Nama</p>
                 </div>
 
                 <div>

@@ -2,7 +2,7 @@
     <div class="max-w-screen-xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center text-base font-medium">
         <!-- Logo + nama -->
         <div class="flex items-center space-x-3 mb-3 sm:mb-0">
-            <img src="assets/sssda.png" class="h-7" alt="Logo" />
+            <img src="../assets/sssda.png" class="h-7" alt="Logo" />
             <span class="text-lg font-semibold text-white">NinetyNineComp</span>
         </div>
 

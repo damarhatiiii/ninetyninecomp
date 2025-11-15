@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'config/db.php';
+include '../config/db.php';
 
 // Cek login
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit;
 }
 ?>
@@ -19,7 +19,7 @@ if (!isset($_SESSION['username'])) {
 </head>
 <body class="bg-gray-900 text-white">
 
-<?php include 'includes/navbar.php'; ?>
+<?php include '../includes/navbar.php'; ?>
 
 <div class="max-w-md mx-auto mt-20 bg-gray-800 p-6 rounded-lg shadow-lg">
     <h2 class="text-xl font-bold mb-4">Tambah Karyawan</h2>
@@ -49,7 +49,7 @@ if (!isset($_SESSION['username'])) {
     </form>
 </div>
 
-<?php include 'includes/footbar.php'; ?>
+<?php include '../includes/footbar.php'; ?>
 
 </body>
 </html>
