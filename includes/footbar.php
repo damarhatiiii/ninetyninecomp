@@ -7,14 +7,15 @@
         </div>
 
         <!-- Link menu -->
-        <ul class="flex flex-wrap gap-6">
-            <li><a href="#" class="hover:text-blue-400 transition">Tentang</a></li>
-            <li><a href="#" class="hover:text-blue-400 transition">Privasi</a></li>
-            <li><a href="#" class="hover:text-blue-400 transition">Kontak</a></li>
+        <ul class="flex gap-6 list-none text-gray-300">
+            <li><a class="hover:text-white" href="#">Tentang</a></li>
+            <li><a class="hover:text-white" href="#">Privasi</a></li>
+            <li><a class="hover:text-white" href="#">Kontak</a></li>
         </ul>
     </div>
 
     <div class="text-center text-sm text-gray-400 pb-5 border-t border-gray-700 mt-3">
-        © <?php echo date("Y"); ?> <span class="text-gray-200 font-semibold">NinetyNineComp</span>. All rights reserved.
+        © <?php echo date("Y"); ?> 
+        <span class="text-gray-200 font-semibold">NinetyNineComp</span>. All rights reserved.
     </div>
 </footer>

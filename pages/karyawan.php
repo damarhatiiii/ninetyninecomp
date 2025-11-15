@@ -59,8 +59,6 @@ $result = mysqli_query($conn, "SELECT * FROM karyawan");
                         <td class="px-6 py-4"><?php echo htmlspecialchars($row['username']); ?></td>
                         <td class="px-6 py-4 capitalize"><?php echo htmlspecialchars($row['role']); ?></td>
                         <td class="px-6 py-4 text-center">
-                            <a href="edit_karyawan.php?id=<?php echo $row['id_karyawan']; ?>" 
-                                class="font-medium text-blue-600 dark:text-blue-400 hover:underline mr-3">Edit</a>
                             <a href="hapus_karyawan.php?id=<?php echo $row['id_karyawan']; ?>" 
                                 class="font-medium text-red-600 dark:text-red-400 hover:underline"
                                 onclick="return confirm('Yakin ingin menghapus karyawan ini?')">Hapus</a>
@@ -72,16 +70,6 @@ $result = mysqli_query($conn, "SELECT * FROM karyawan");
         </div>
     </div>
     </div>
-
-    <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-    <tr>
-        <td><?= $row['id_karyawan']; ?></td>
-        <td><?= $row['nama']; ?></td>
-        <td><?= $row['username']; ?></td>
-    </tr>
-    <?php } ?>
-    </table>
-    
         <!-- Footer -->
     <?php include 'includes/footbar.php'; ?>
 </body>

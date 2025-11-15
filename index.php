@@ -1,27 +1,25 @@
 <?php
 $no_redirect = true;
-include 'config/db.php';
+include '../config/db.php';
 session_start();
 
-if (isset($_POST['login'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+$username = $_POST['username'];
+$password = $_POST['password'];
 
-    $sql = "SELECT * FROM karyawan WHERE username='$username' AND password='$password'";
-    $result = mysqli_query($conn, $sql);
+$q = mysqli_query($conn, "SELECT * FROM karyawan WHERE username='$username'");
+$data = mysqli_fetch_assoc($q);
 
-    if (mysqli_num_rows($result) === 1) {
-    $row = mysqli_fetch_assoc($result);
-    
-    // Simpan semua data penting ke session
-    $_SESSION['id_karyawan'] = $row['id_karyawan'];
-    $_SESSION['username'] = $row['username'];
-    $_SESSION['nama'] = $row['nama'];
-    $_SESSION['role'] = $row['role']; // ⬅️ tambahkan ini
+if ($data && password_verify($password, $data['password'])) {
 
-    header('Location: dashboard.php');
+    $_SESSION['username'] = $data['username'];
+    $_SESSION['nama'] = $data['nama'];
+    $_SESSION['role'] = $data['role'];
+
+    header("Location: ../dashboard.php");
     exit;
-}
+} else {
+    header("Location: login.php?error=1");
+    exit;
 }
 ?>
 
@@ -30,10 +28,30 @@ if (isset($_POST['login'])) {
 <head>
     <meta charset="UTF-8">
     <title>Login - Toko Komputer</title>
-    <link href="./output.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/output.css">
+    <link href="../assets/css/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/output.css">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+    <?php if (isset($_GET['success'])): ?>
+    <div role="alert" class="alert alert-success mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Data berhasil disimpan!</span>
+    </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+    <div role="alert" class="alert alert-error mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2 2m0 0l2-2m-2 2V10m11 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Gagal menyimpan data!</span>
+    </div>
+    <?php endif; ?>
+
     <div class="flex min-h-full flex-col justify-center px-12 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 class="mt-15 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Login Karyawan</h2>

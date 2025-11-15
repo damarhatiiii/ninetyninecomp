@@ -33,7 +33,6 @@ if (isset($_POST['simpan'])) {
             </script>";
         exit;
     }
-
     // Simpan produk baru
     $insert = mysqli_query($conn, "INSERT INTO produk 
         (id_produk, nama_produk, id_kategori, merk, spesifikasi, stok, harga) 
@@ -41,16 +40,13 @@ if (isset($_POST['simpan'])) {
         ('$id_produk', '$nama_produk', '$id_kategori', '$merk', '$spesifikasi', $stok, $harga)");
 
     if ($insert) {
-        echo "<script>
-                alert('Produk berhasil ditambahkan!');
-                window.location='barang.php';
-              </script>";
+        header("Location: produk.php?success=1");
+        exit;
     } else {
-        echo "<script>
-                alert('Gagal menyimpan: ".mysqli_error($conn)."');
-                window.history.back();
-              </script>";
+        header("Location: produk.php?error=1");
+        exit;
     }
+
 }
 ?>
 
@@ -62,10 +58,13 @@ if (isset($_POST['simpan'])) {
     <title>Tambah Produk</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900">
 
     <?php include 'includes/navbar.php'; ?>
+    
 
     <div class="p-6 max-w-3xl mx-auto">
         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">

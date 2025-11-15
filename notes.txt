@@ -1,0 +1,901 @@
+index.php
+<?php
+$no_redirect = true;
+include '../config/db.php';
+session_start();
+
+$username = $_POST['username'];
+$password = $_POST['password'];
+
+$q = mysqli_query($conn, "SELECT * FROM karyawan WHERE username='$username'");
+$data = mysqli_fetch_assoc($q);
+
+if ($data && password_verify($password, $data['password'])) {
+
+    $_SESSION['username'] = $data['username'];
+    $_SESSION['nama'] = $data['nama'];
+    $_SESSION['role'] = $data['role'];
+
+    header("Location: ../dashboard.php");
+    exit;
+} else {
+    header("Location: login.php?error=1");
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Toko Komputer</title>
+    <link href="../assets/css/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/output.css">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <?php if (isset($_GET['success'])): ?>
+    <div role="alert" class="alert alert-success mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Data berhasil disimpan!</span>
+    </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+    <div role="alert" class="alert alert-error mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2 2m0 0l2-2m-2 2V10m11 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Gagal menyimpan data!</span>
+    </div>
+    <?php endif; ?>
+
+    <div class="flex min-h-full flex-col justify-center px-12 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h2 class="mt-15 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Login Karyawan</h2>
+    </div>
+
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <form action="" method="POST" class="space-y-6">
+    <div>
+        <label for="username" class="block text-sm/6 font-medium text-gray-900">Username</label>
+        <div class="mt-2">
+        <input name="username" type="text" required autocomplete="username"
+            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+        </div>
+    </div>
+
+    <div>
+        <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
+        <div class="mt-2">
+        <input name="password" type="password" required autocomplete="current-password"
+            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+        </div>
+    </div>
+
+    <div>
+        <button name="login" type="submit"
+        class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        Sign in
+        </button>
+    </div>
+    </form>
+    </div>
+    </div>
+<?php if (!empty($error)) echo "<p style='color:red'>$error</p>"; ?>
+</body>
+</html>
+
+auth/login.php
+<?php session_start(); ?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Toko Komputer</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <div class="flex min-h-screen items-center justify-center px-4">
+        <div class="w-full max-w-sm bg-white shadow-lg rounded-xl p-6">
+
+            <h2 class="text-center text-2xl font-bold mb-6">Login Karyawan</h2>
+
+            <?php if (isset($_GET['error'])): ?>
+                <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
+                    Username atau password salah!
+                </div>
+            <?php endif; ?>
+
+            <form action="login_proses.php" method="POST" class="space-y-5">
+                <div>
+                    <label class="text-sm font-medium">Username</label>
+                    <input name="username" type="text" required
+                        class="w-full p-2 border rounded mt-1">
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Password</label>
+                    <input name="password" type="password" required
+                        class="w-full p-2 border rounded mt-1">
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                    Login
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+auth/login_proses.php
+<?php
+session_start();
+include 'config/db.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $q = mysqli_query($conn, "SELECT * FROM karyawan WHERE username='$username'");
+    $data = mysqli_fetch_assoc($q);
+
+    if ($data && password_verify($password, $data['password'])) {
+
+        $_SESSION['username'] = $data['username'];
+        $_SESSION['nama']     = $data['nama'];
+        $_SESSION['role']     = $data['role'];
+
+        header("Location: pages/dashboard.php");
+        exit;
+
+    } else {
+        header("Location: auth/login.php?error=1");
+        exit;
+    }
+}
+?>
+
+auth/logout.php
+<?php
+session_start();
+session_destroy();
+header('Location: login.php');
+exit;
+?>
+
+
+config/db.php
+<?php
+$host = 'localhost';
+$user = 'root';
+$pass = '';
+$dbname = 'toko_komputer';
+
+$conn = mysqli_connect($host, $user, $pass, $dbname);
+
+if (!$conn) {
+    die("Koneksi gagal: " . mysqli_connect_error());
+}
+?>
+
+config/koneksi.php
+<?php
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db   = "toko_komputer"; // ganti sesuai nama database kamu
+
+$koneksi = mysqli_connect($host, $user, $pass, $db);
+
+if (!$koneksi) {
+    die("Koneksi gagal: " . mysqli_connect_error());
+}
+?>
+
+
+includes/navbar.php
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+        
+<?php
+// Deteksi halaman aktif berdasarkan nama file
+$current_page = basename($_SERVER['PHP_SELF']);
+?>
+
+    <nav class="bg-white border-gray-200 dark:bg-gray-900 shadow">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <a href="dashboard.php" class="flex items-center space-x-3 rtl:space-x-reverse">
+        <img src="assets/sssda.png" class="h-8" alt="NinetyNine Logo" />
+        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+            NinetyNineComp
+        </span>
+        </a>
+
+        <button data-collapse-toggle="navbar-default" type="button"
+        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden 
+        hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 
+        dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        aria-controls="navbar-default" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+            stroke-width="2" d="M1 1h15M1 7h15M1 13h15" />
+        </svg>
+        </button>
+
+        <div class="hidden w-full md:block md:w-auto ml-auto" id="navbar-default">
+        <ul
+            class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg 
+            bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 
+            md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+
+            <!-- Dashboard -->
+            <li>
+            <a href="dashboard.php"
+                class="block py-2 px-3 rounded-sm md:p-0 
+                <?= $current_page == 'dashboard.php'
+                    ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500'
+                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700'; ?>">
+                Dashboard
+            </a>
+            </li>
+
+            <!-- Produk -->
+            <li>
+            <a href="produk.php"
+                class="block py-2 px-3 rounded-sm md:p-0 
+                <?= $current_page == 'produk.php'
+                    ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500'
+                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700'; ?>">
+                Produk
+            </a>
+            </li>
+
+            <!-- Tambah -->
+            <li>
+            <a href="tambah.php"
+                class="block py-2 px-3 rounded-sm md:p-0 
+                <?= $current_page == 'tambah.php'
+                    ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500'
+                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700'; ?>">
+                Tambah
+            </a>
+            </li>
+
+            <!-- Akun -->
+            <li>
+            <a href="karyawan.php"
+                class="block py-2 px-3 rounded-sm md:p-0 
+                <?= $current_page == 'karyawan.php'
+                    ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500'
+                    : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700'; ?>">
+                Akun
+            </a>
+            </li>
+
+        </ul>
+        </div>
+    </div>
+    </nav>
+
+includes/footbar.php
+<footer class="w-full bg-gray-800 dark:bg-gray-900 border-t border-gray-700 text-gray-200">
+    <div class="max-w-screen-xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center text-base font-medium">
+        <!-- Logo + nama -->
+        <div class="flex items-center space-x-3 mb-3 sm:mb-0">
+            <img src="assets/sssda.png" class="h-7" alt="Logo" />
+            <span class="text-lg font-semibold text-white">NinetyNineComp</span>
+        </div>
+
+        <!-- Link menu -->
+        <ul class="flex gap-6 list-none text-gray-300">
+            <li><a class="hover:text-white" href="#">Tentang</a></li>
+            <li><a class="hover:text-white" href="#">Privasi</a></li>
+            <li><a class="hover:text-white" href="#">Kontak</a></li>
+        </ul>
+    </div>
+
+    <div class="text-center text-sm text-gray-400 pb-5 border-t border-gray-700 mt-3">
+        © <?php echo date("Y"); ?> 
+        <span class="text-gray-200 font-semibold">NinetyNineComp</span>. All rights reserved.
+    </div>
+</footer>
+
+
+pages/dashboard.php
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit;
+    
+}
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <?php include 'includes/navbar.php'; ?>
+
+    <main class="flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
+        <h1 class="text-4xl font-bold">Halo, <?= $_SESSION['nama']; ?> 👋</h1>
+    </main>
+
+    <?php include 'includes/footbar.php'; ?>
+</body>
+</html>
+
+pages/hapus_karyawan.php
+<?php
+include 'config/db.php';
+
+$id = $_GET['id'];
+
+mysqli_query($conn, "DELETE FROM karyawan WHERE id_karyawan = '$id'");
+
+header("Location: karyawan.php?deleted=1");
+exit;
+?>
+
+pages/hapus_produk.php
+<?php
+include 'config/db.php';
+
+$id = $_GET['id'];
+
+$delete = mysqli_query($conn, "DELETE FROM produk WHERE id_produk='$id'");
+
+if ($delete) {
+    header("Location: produk.php?msg=deleted");
+} else {
+    echo "Gagal menghapus: " . mysqli_error($conn);
+}
+?>
+
+pages/karyawan.php
+<?php
+include 'config/db.php'; // <== Tambahkan ini dulu
+
+$result = mysqli_query($conn, "SELECT * FROM karyawan");
+?>
+<!-- Navbar -->
+<?php include 'includes\navbar.php'; ?>
+
+<?php
+include 'config/db.php';
+session_start();
+
+// Pastikan user login dulu
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit;
+}
+
+// Ambil data karyawan dari database
+$result = mysqli_query($conn, "SELECT * FROM karyawan");
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akun</title>
+</head>
+<body>
+    <div class="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between border-b pb-3 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Data Karyawan</h2>
+            <a href="tambah_karyawan.php" 
+                class="inline-block bg-blue-700 hover:bg-blue-800 text-white font-medium px-4 py-2 rounded-lg text-sm focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
+                + Tambah Karyawan
+            </a>
+        </div>
+
+        <div class="relative overflow-x-auto rounded-lg shadow-sm">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-300">
+                <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">No</th>
+                        <th scope="col" class="px-6 py-3">Nama</th>
+                        <th scope="col" class="px-6 py-3">Username</th>
+                        <th scope="col" class="px-6 py-3">Role</th>
+                        <th scope="col" class="px-6 py-3 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $no = 1;
+                    while ($row = mysqli_fetch_assoc($result)): 
+                    ?>
+                    <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white"><?php echo $no++; ?></td>
+                        <td class="px-6 py-4"><?php echo htmlspecialchars($row['nama']); ?></td>
+                        <td class="px-6 py-4"><?php echo htmlspecialchars($row['username']); ?></td>
+                        <td class="px-6 py-4 capitalize"><?php echo htmlspecialchars($row['role']); ?></td>
+                        <td class="px-6 py-4 text-center">
+                            <a href="hapus_karyawan.php?id=<?php echo $row['id_karyawan']; ?>" 
+                                class="font-medium text-red-600 dark:text-red-400 hover:underline"
+                                onclick="return confirm('Yakin ingin menghapus karyawan ini?')">Hapus</a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+        <!-- Footer -->
+    <?php include 'includes/footbar.php'; ?>
+</body>
+</html>
+
+
+pages/produk.php
+<?php 
+include 'config/db.php';
+
+// Jalankan query
+$query = "SELECT * FROM produk";
+$result = mysqli_query($conn, $query);
+
+// Jika query gagal, tampilkan pesan error MySQL
+if (!$result) {
+    die("Query gagal: " . mysqli_error($conn));
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Data Produk</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    </head>
+<body>
+    <!-- Navbar -->
+    <?php include 'includes/navbar.php'; ?>
+
+    <div class="relative overflow-x-auto shadow-md">
+        <h2 class="text-2xl font-bold bg-gray-800 text-white p-5">
+            Data Produk
+        </h2>
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 text-gray-700">
+            <tr>
+                <th scope="col" class="px-6 py-3">Kode</th>
+                <th scope="col" class="px-6 py-3">Nama Produk</th>
+                <th scope="col" class="px-6 py-3">Kategori</th>
+                <th scope="col" class="px-6 py-3">Merk</th>
+                <th scope="col" class="px-6 py-3">Spesifikasi</th>
+                <th scope="col" class="px-6 py-3">Stok</th>
+                <th scope="col" class="px-6 py-3">Harga</th>
+                <th scope="col" class="px-6 py-3 text-center">Aksi</th> <!-- INI POSISI YANG BENAR -->
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <?= htmlspecialchars($row['id_produk']); ?>
+                </td>
+
+                <td class="px-6 py-4"><?= htmlspecialchars($row['nama_produk']); ?></td>
+                <td class="px-6 py-4"><?= htmlspecialchars($row['id_kategori']); ?></td>
+                <td class="px-6 py-4"><?= htmlspecialchars($row['merk']); ?></td>
+                <td class="px-6 py-4"><?= htmlspecialchars($row['spesifikasi']); ?></td>
+                <td class="px-6 py-4"><?= htmlspecialchars($row['stok']); ?></td>
+
+                <td class="px-6 py-4 text-green-600 font-semibold">
+                    Rp <?= number_format($row['harga'], 0, ',', '.'); ?>
+                </td>
+
+                <!-- KOLOM AKSI -->
+                <td class="px-6 py-4 text-center">
+
+                    <!-- Update Stok -->
+                    <a href="update_stok.php?id=<?= $row['id_produk']; ?>"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-xs">
+                    Update Stok
+                    </a>
+
+                    <!-- Hapus -->
+                    <a href="hapus_produk.php?id=<?= $row['id_produk']; ?>"
+                    onclick="return confirm('Yakin ingin menghapus produk ini?')"
+                    class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs ml-2">
+                    Hapus
+                    </a>
+
+                </td>
+            </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+    </div>
+
+    <!-- Footer -->
+    <?php include 'includes/footbar.php'; ?>
+</body>
+</html>
+
+pages/tambah.php
+<?php
+session_start();
+include 'config/db.php';
+
+// Pastikan user sudah login
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit;
+}
+
+// Cek role
+if (!isset($_SESSION['role']) || ($_SESSION['role'] != 'admin' && $_SESSION['role'] != 'staf')) {
+    die('Akses ditolak!');
+}
+
+// Proses simpan produk baru
+if (isset($_POST['simpan'])) {
+
+    $id_produk = mysqli_real_escape_string($conn, $_POST['id_produk']);
+    $nama_produk = mysqli_real_escape_string($conn, $_POST['nama_produk']);
+    $id_kategori = mysqli_real_escape_string($conn, $_POST['id_kategori']);
+    $merk = mysqli_real_escape_string($conn, $_POST['merk']);
+    $spesifikasi = mysqli_real_escape_string($conn, $_POST['spesifikasi']);
+    $harga = (int) $_POST['harga'];
+    $stok = (int) $_POST['stok'];
+
+    // Cek apakah ID produk sudah ada
+    $cek = mysqli_query($conn, "SELECT * FROM produk WHERE id_produk='$id_produk'");
+    if ($cek && mysqli_num_rows($cek) > 0) {
+        echo "<script>
+                alert('ID Produk sudah ada, gunakan ID lain!');
+                window.history.back();
+            </script>";
+        exit;
+    }
+    // Simpan produk baru
+    $insert = mysqli_query($conn, "INSERT INTO produk 
+        (id_produk, nama_produk, id_kategori, merk, spesifikasi, stok, harga) 
+        VALUES 
+        ('$id_produk', '$nama_produk', '$id_kategori', '$merk', '$spesifikasi', $stok, $harga)");
+
+    if ($insert) {
+        header("Location: produk.php?success=1");
+        exit;
+    } else {
+        header("Location: produk.php?error=1");
+        exit;
+    }
+
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Produk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+
+    <?php include 'includes/navbar.php'; ?>
+    
+
+    <div class="p-6 max-w-3xl mx-auto">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 border-b pb-3">
+                Tambah Produk Baru
+            </h2>
+
+            <form method="POST" class="space-y-5">
+
+                <!-- ID Produk -->
+                <div>
+                    <label for="id_produk" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                        ID Produk
+                    </label>
+                    <input type="text" name="id_produk" id="id_produk" required
+                        class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white" />
+                </div>
+
+                <!-- Nama Produk -->
+                <div>
+                    <label for="nama_produk" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                        Nama Produk
+                    </label>
+                    <input type="text" name="nama_produk" id="nama_produk" required
+                        class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white" />
+                </div>
+
+                <!-- Kategori -->
+                <div>
+                    <label for="id_kategori" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                        Kategori
+                    </label>
+
+                    <select name="id_kategori" id="id_kategori" required
+                        class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white">
+
+                        <option value="" disabled selected>Pilih Kategori</option>
+
+                        <?php
+                        $kategoriQuery = mysqli_query($conn, "SELECT * FROM kategori ORDER BY nama_kategori ASC");
+                        while ($row = mysqli_fetch_assoc($kategoriQuery)) {
+                            echo "<option value='{$row['id_kategori']}'>{$row['nama_kategori']}</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                <!-- Merk -->
+                <div>
+                    <label for="merk" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                        Merek
+                    </label>
+                    <input type="text" name="merk" id="merk" required
+                        class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white" />
+                </div>
+
+                <!-- Spesifikasi -->
+                <div>
+                    <label for="spesifikasi" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                        Spesifikasi
+                    </label>
+                    <textarea name="spesifikasi" id="spesifikasi" rows="3"
+                        class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white"></textarea>
+                </div>
+
+                <!-- Harga & Stok -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="harga" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                            Harga (Rp)
+                        </label>
+                        <input type="number" name="harga" id="harga" required
+                            class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white" />
+                    </div>
+
+                    <div>
+                        <label for="stok" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                            Stok
+                        </label>
+                        <input type="number" name="stok" id="stok" required
+                            class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white" />
+                    </div>
+                </div>
+
+                <button type="submit" name="simpan"
+                    class="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 font-semibold rounded-lg text-sm px-5 py-2.5">
+                    Simpan Produk
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <?php include 'includes/footbar.php'; ?>
+
+</body>
+</html>
+
+pages/tambah_karyawan.php
+<?php
+session_start();
+include 'config/db.php';
+
+// Cek login
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Karyawan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+<?php include 'includes/navbar.php'; ?>
+
+<div class="max-w-md mx-auto mt-20 bg-gray-800 p-6 rounded-lg shadow-lg">
+    <h2 class="text-xl font-bold mb-4">Tambah Karyawan</h2>
+
+    <form action="tambah_karyawan_proses.php" method="POST">
+        <label class="block mb-2">Nama</label>
+        <input type="text" name="nama" required
+            class="w-full p-2 mb-4 rounded bg-gray-700 text-white">
+
+        <label class="block mb-2">Username</label>
+        <input type="text" name="username" required
+            class="w-full p-2 mb-4 rounded bg-gray-700 text-white">
+
+        <label class="block mb-2">Password</label>
+        <input type="password" name="password" required
+            class="w-full p-2 mb-4 rounded bg-gray-700 text-white">
+
+        <label class="block mb-2">Role</label>
+        <select name="role" required class="w-full p-2 mb-4 rounded bg-gray-700 text-white">
+            <option value="admin">Admin</option>
+            <option value="staf">Staf</option>
+        </select>
+
+        <button class="bg-blue-600 hover:bg-blue-700 w-full py-2 rounded-lg font-semibold">
+            Simpan
+        </button>
+    </form>
+</div>
+
+<?php include 'includes/footbar.php'; ?>
+
+</body>
+</html>
+
+pages/tambah_karyawan_proses.php
+<?php
+include 'config/db.php';
+
+$nama = $_POST['nama'];
+$username = $_POST['username'];
+$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+$role = $_POST['role'];
+
+$query = "INSERT INTO karyawan (nama, username, password, role) 
+            VALUES ('$nama', '$username', '$password', '$role')";
+
+mysqli_query($conn, $query);
+
+header("Location: karyawan.php?msg=sukses");
+exit;
+
+pages/update_stok.php
+<?php
+include 'config/db.php';
+
+$id = $_GET['id'];
+$q = mysqli_query($conn, "SELECT * FROM produk WHERE id_produk='$id'");
+$data = mysqli_fetch_assoc($q);
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Stok Produk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-900 text-white">
+    <!-- Navbar -->
+    <?php include 'includes/navbar.php'; ?>
+    <div class="max-w-md mx-auto mt-24 mb-32">
+        <div class="bg-gray-800 rounded-lg shadow-md">
+
+            <!-- HEADER -->
+            <div class="bg-gray-800 text-white p-4 rounded-t-lg">
+                <h2 class="text-lg font-bold">Update Stok Produk</h2>
+            </div>
+
+            <!-- FORM -->
+            <div class="p-6">
+                <form action="update_stok_proses.php" method="POST">
+
+                    <input type="hidden" name="id_produk" value="<?= $data['id_produk']; ?>">
+
+                    <label class="block mb-2 font-semibold text-gray-300">Nama Produk</label>
+                    <input type="text" disabled value="<?= $data['nama_produk']; ?>"
+                        class="w-full p-2 mb-4 border rounded bg-gray-700 text-white">
+
+                    <label class="block mb-2 font-semibold text-gray-300">Stok Baru</label>
+                    <input type="number" name="stok" required value="<?= $data['stok']; ?>"
+                        class="w-full p-2 mb-4 border rounded bg-gray-700 text-white">
+
+                    <button
+                        class="bg-blue-600 text-white w-full py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        Simpan Perubahan
+                    </button>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <?php include 'includes/footbar.php'; ?>
+
+</body>
+</html>
+
+pages/update_stok_proses.php
+<?php
+include 'config/db.php';
+
+$id = $_GET['id'];
+$q = mysqli_query($conn, "SELECT * FROM produk WHERE id_produk='$id'");
+$data = mysqli_fetch_assoc($q);
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Stok Produk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-900 text-white">
+    <!-- Navbar -->
+    <?php include 'includes/navbar.php'; ?>
+    <div class="max-w-md mx-auto mt-24 mb-32">
+        <div class="bg-gray-800 rounded-lg shadow-md">
+
+            <!-- HEADER -->
+            <div class="bg-gray-800 text-white p-4 rounded-t-lg">
+                <h2 class="text-lg font-bold">Update Stok Produk</h2>
+            </div>
+
+            <!-- FORM -->
+            <div class="p-6">
+                <form action="update_stok_proses.php" method="POST">
+
+                    <input type="hidden" name="id_produk" value="<?= $data['id_produk']; ?>">
+
+                    <label class="block mb-2 font-semibold text-gray-300">Nama Produk</label>
+                    <input type="text" disabled value="<?= $data['nama_produk']; ?>"
+                        class="w-full p-2 mb-4 border rounded bg-gray-700 text-white">
+
+                    <label class="block mb-2 font-semibold text-gray-300">Stok Baru</label>
+                    <input type="number" name="stok" required value="<?= $data['stok']; ?>"
+                        class="w-full p-2 mb-4 border rounded bg-gray-700 text-white">
+
+                    <button
+                        class="bg-blue-600 text-white w-full py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        Simpan Perubahan
+                    </button>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <?php include 'includes/footbar.php'; ?>
+
+</body>
+</html>
