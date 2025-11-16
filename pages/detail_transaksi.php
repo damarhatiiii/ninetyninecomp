@@ -16,7 +16,7 @@ if (mysqli_num_rows($table_check) == 0) {
 }
 
 // Ambil data transaksi dengan prepared statement
-$stmt = mysqli_prepare($conn, "SELECT t.*, c.nama as nama_customer, c.email as email_customer, k.nama as nama_karyawan 
+$stmt = mysqli_prepare($conn, "SELECT t.*, c.nama as nama_customer, k.nama as nama_karyawan 
                                 FROM transaksi t 
                                 LEFT JOIN customer c ON t.id_customer = c.id_customer
                                 JOIN karyawan k ON t.id_karyawan = k.id_karyawan
@@ -90,13 +90,10 @@ $detail = mysqli_stmt_get_result($stmt2);
                     <p class="text-sm text-gray-500">Karyawan</p>
                     <p class="font-semibold"><?= htmlspecialchars($t['nama_karyawan']); ?></p>
                 </div>
-                <?php if ($t['nama_customer']): ?>
                 <div>
-                    <p class="text-sm text-gray-500">Customer</p>
-                    <p class="font-semibold"><?= htmlspecialchars($t['nama_customer']); ?></p>
-                    <p class="text-sm text-gray-600"><?= htmlspecialchars($t['email_customer'] ?? ''); ?></p>
+                    <p class="text-sm text-gray-500">Nama Pembeli</p>
+                    <p class="font-semibold"><?= htmlspecialchars($t['nama_pembeli'] ?? 'Umum'); ?></p>
                 </div>
-                <?php endif; ?>
             </div>
 
             <h3 class="text-lg font-semibold mb-3">Detail Produk</h3>
@@ -130,9 +127,9 @@ $detail = mysqli_stmt_get_result($stmt2);
             </table>
 
             <div class="flex gap-2">
-                <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                <a href="cetak_struk.php?id=<?= $id_transaksi; ?>" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                     Cetak Struk
-                </button>
+                </a>
                 <a href="<?= $back_url; ?>" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
                     Kembali
                 </a>

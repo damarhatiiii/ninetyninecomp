@@ -8,11 +8,14 @@ if (!isset($_SESSION['username'])) {
 }
 
 // Ambil data transaksi
-$transaksi_result = mysqli_query($conn, "SELECT t.*, c.nama as nama_customer, k.nama as nama_karyawan 
+$transaksi_result = mysqli_query($conn, "SELECT t.*, k.nama as nama_karyawan,
+                                COALESCE(t.nama_pembeli, 'Umum') as nama_pembeli_display
                                 FROM transaksi t 
-                                LEFT JOIN customer c ON t.id_customer = c.id_customer
                                 JOIN karyawan k ON t.id_karyawan = k.id_karyawan
                                 ORDER BY t.tanggal DESC");
+if (!$transaksi_result) {
+    $transaksi_result = false;
+}
 
 // Ambil data barang masuk
 $barang_masuk_result = mysqli_query($conn, "SELECT bm.*, p.nama_produk, s.nama as nama_supplier, k.nama as nama_karyawan
@@ -21,6 +24,9 @@ $barang_masuk_result = mysqli_query($conn, "SELECT bm.*, p.nama_produk, s.nama a
                                 JOIN supplier s ON bm.id_supplier = s.id_supplier
                                 JOIN karyawan k ON bm.id_karyawan = k.id_karyawan
                                 ORDER BY bm.tanggal DESC");
+if (!$barang_masuk_result) {
+    $barang_masuk_result = false;
+}
 
 // Ambil data barang keluar
 $barang_keluar_result = mysqli_query($conn, "SELECT bk.*, p.nama_produk, k.nama as nama_karyawan
@@ -28,6 +34,9 @@ $barang_keluar_result = mysqli_query($conn, "SELECT bk.*, p.nama_produk, k.nama 
                                 JOIN produk p ON bk.id_produk = p.id_produk
                                 JOIN karyawan k ON bk.id_karyawan = k.id_karyawan
                                 ORDER BY bk.tanggal DESC");
+if (!$barang_keluar_result) {
+    $barang_keluar_result = false;
+}
 
 // Ambil data aktifitas log
 $aktifitas_result = mysqli_query($conn, "SELECT a.*, k.nama as nama_karyawan
@@ -35,6 +44,9 @@ $aktifitas_result = mysqli_query($conn, "SELECT a.*, k.nama as nama_karyawan
                                 JOIN karyawan k ON a.id_karyawan = k.id_karyawan
                                 ORDER BY a.tanggal DESC
                                 LIMIT 100");
+if (!$aktifitas_result) {
+    $aktifitas_result = false;
+}
 
 // Tab aktif
 $active_tab = $_GET['tab'] ?? 'transaksi';
@@ -125,14 +137,15 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                         <tbody>
                             <?php 
                             $no = 1;
-                            mysqli_data_seek($transaksi_result, 0);
-                            while ($row = mysqli_fetch_assoc($transaksi_result)): 
+                            if ($transaksi_result && mysqli_num_rows($transaksi_result) > 0) {
+                                mysqli_data_seek($transaksi_result, 0);
+                                while ($row = mysqli_fetch_assoc($transaksi_result)): 
                             ?>
                             <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                                 <td class="px-6 py-4"><?= $no++; ?></td>
                                 <td class="px-6 py-4 font-medium"><?= htmlspecialchars($row['id_transaksi']); ?></td>
                                 <td class="px-6 py-4"><?= date('d/m/Y', strtotime($row['tanggal'])); ?></td>
-                                <td class="px-6 py-4"><?= htmlspecialchars($row['nama_customer'] ?? 'Umum'); ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($row['nama_pembeli_display'] ?? 'Umum'); ?></td>
                                 <td class="px-6 py-4"><?= htmlspecialchars($row['nama_karyawan']); ?></td>
                                 <td class="px-6 py-4 font-semibold text-green-600">
                                     Rp <?= number_format($row['total'], 0, ',', '.'); ?>
@@ -142,7 +155,12 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                                         class="text-blue-600 hover:underline">Detail</a>
                                 </td>
                             </tr>
-                            <?php endwhile; ?>
+                            <?php 
+                                endwhile;
+                            } else {
+                                echo '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Tidak ada data transaksi</td></tr>';
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -166,8 +184,9 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                         <tbody>
                             <?php 
                             $no = 1;
-                            mysqli_data_seek($barang_masuk_result, 0);
-                            while ($row = mysqli_fetch_assoc($barang_masuk_result)): 
+                            if ($barang_masuk_result && mysqli_num_rows($barang_masuk_result) > 0) {
+                                mysqli_data_seek($barang_masuk_result, 0);
+                                while ($row = mysqli_fetch_assoc($barang_masuk_result)): 
                             ?>
                             <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                                 <td class="px-6 py-4"><?= $no++; ?></td>
@@ -178,7 +197,12 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                                 <td class="px-6 py-4"><?= $row['jumlah_masuk']; ?></td>
                                 <td class="px-6 py-4"><?= htmlspecialchars($row['nama_karyawan']); ?></td>
                             </tr>
-                            <?php endwhile; ?>
+                            <?php 
+                                endwhile;
+                            } else {
+                                echo '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Tidak ada data barang masuk</td></tr>';
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -201,8 +225,9 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                         <tbody>
                             <?php 
                             $no = 1;
-                            mysqli_data_seek($barang_keluar_result, 0);
-                            while ($row = mysqli_fetch_assoc($barang_keluar_result)): 
+                            if ($barang_keluar_result && mysqli_num_rows($barang_keluar_result) > 0) {
+                                mysqli_data_seek($barang_keluar_result, 0);
+                                while ($row = mysqli_fetch_assoc($barang_keluar_result)): 
                             ?>
                             <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                                 <td class="px-6 py-4"><?= $no++; ?></td>
@@ -212,7 +237,12 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                                 <td class="px-6 py-4"><?= $row['jumlah_keluar']; ?></td>
                                 <td class="px-6 py-4"><?= htmlspecialchars($row['nama_karyawan']); ?></td>
                             </tr>
-                            <?php endwhile; ?>
+                            <?php 
+                                endwhile;
+                            } else {
+                                echo '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada data barang keluar</td></tr>';
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -234,20 +264,21 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                         <tbody>
                             <?php 
                             $no = 1;
-                            mysqli_data_seek($aktifitas_result, 0);
-                            while ($row = mysqli_fetch_assoc($aktifitas_result)): 
-                                $badge_color = '';
-                                switch($row['jenis_aktifitas']) {
-                                    case 'barang_masuk':
-                                        $badge_color = 'bg-green-100 text-green-800';
-                                        break;
-                                    case 'barang_keluar':
-                                        $badge_color = 'bg-orange-100 text-orange-800';
-                                        break;
-                                    case 'transaksi':
-                                        $badge_color = 'bg-blue-100 text-blue-800';
-                                        break;
-                                }
+                            if ($aktifitas_result && mysqli_num_rows($aktifitas_result) > 0) {
+                                mysqli_data_seek($aktifitas_result, 0);
+                                while ($row = mysqli_fetch_assoc($aktifitas_result)): 
+                                    $badge_color = '';
+                                    switch($row['jenis_aktifitas']) {
+                                        case 'barang_masuk':
+                                            $badge_color = 'bg-green-100 text-green-800';
+                                            break;
+                                        case 'barang_keluar':
+                                            $badge_color = 'bg-orange-100 text-orange-800';
+                                            break;
+                                        case 'transaksi':
+                                            $badge_color = 'bg-blue-100 text-blue-800';
+                                            break;
+                                    }
                             ?>
                             <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                                 <td class="px-6 py-4"><?= $no++; ?></td>
@@ -260,7 +291,12 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                                 </td>
                                 <td class="px-6 py-4"><?= htmlspecialchars($row['keterangan']); ?></td>
                             </tr>
-                            <?php endwhile; ?>
+                            <?php 
+                                endwhile;
+                            } else {
+                                echo '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada data log aktifitas</td></tr>';
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>

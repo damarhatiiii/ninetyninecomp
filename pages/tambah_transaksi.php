@@ -26,18 +26,24 @@ $customer_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama");
         <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-md p-6">
             <h2 class="text-2xl font-bold mb-6">Transaksi Baru</h2>
             
+            <?php if (isset($_GET['error'])): ?>
+                <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
+                    <?= htmlspecialchars($_GET['error']); ?>
+                </div>
+            <?php endif; ?>
+            
             <form method="POST" action="tambah_transaksi_proses.php" id="transaksiForm">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Customer (Opsional)</label>
-                    <select name="id_customer" class="w-full p-2 border rounded">
-                        <option value="">Umum (Tanpa Customer)</option>
-                        <?php 
-                        mysqli_data_seek($customer_result, 0);
-                        while ($c = mysqli_fetch_assoc($customer_result)): ?>
-                            <option value="<?= $c['id_customer']; ?>"><?= htmlspecialchars($c['nama']); ?></option>
-                        <?php endwhile; ?>
-                    </select>
+                    <label class="block text-sm font-medium mb-1">Nama Pembeli *</label>
+                    <input type="text" name="nama_pembeli" id="nama_pembeli" 
+                        class="w-full p-2 border rounded" 
+                        placeholder="Masukkan nama pembeli"
+                        required>
+                    <p class="text-xs text-gray-500 mt-1">Masukkan nama pembeli untuk transaksi ini</p>
                 </div>
+
+                <!-- Hidden field untuk id_customer jika dipilih dari autocomplete -->
+                <input type="hidden" name="id_customer" id="id_customer" value="">
 
                 <div class="mb-4">
                     <h3 class="text-lg font-semibold mb-3">Pilih Produk</h3>
@@ -91,6 +97,36 @@ $customer_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama");
 
     <script>
         let selectedProducts = {};
+        let customerList = [];
+        
+        // Load customer list untuk autocomplete
+        <?php 
+        if ($customer_result && mysqli_num_rows($customer_result) > 0) {
+            mysqli_data_seek($customer_result, 0);
+            echo "customerList = [\n";
+            while ($c = mysqli_fetch_assoc($customer_result)) {
+                echo "    {id: '" . htmlspecialchars($c['id_customer'], ENT_QUOTES) . "', nama: '" . htmlspecialchars($c['nama'], ENT_QUOTES) . "'},\n";
+            }
+            echo "];\n";
+        }
+        ?>
+
+        // Autocomplete untuk nama pembeli
+        document.addEventListener('DOMContentLoaded', function() {
+            const namaPembeliInput = document.getElementById('nama_pembeli');
+            const idCustomerInput = document.getElementById('id_customer');
+            
+            namaPembeliInput.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                // Cek apakah input cocok dengan customer yang ada
+                const matchedCustomer = customerList.find(c => c.nama.toLowerCase() === value);
+                if (matchedCustomer) {
+                    idCustomerInput.value = matchedCustomer.id;
+                } else {
+                    idCustomerInput.value = '';
+                }
+            });
+        });
 
         function toggleProduk(checkbox) {
             const produkId = checkbox.value;

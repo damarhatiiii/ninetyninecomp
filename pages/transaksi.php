@@ -8,9 +8,9 @@ if (!isset($_SESSION['username'])) {
 }
 
 // Ambil data transaksi
-$result = mysqli_query($conn, "SELECT t.*, c.nama as nama_customer, k.nama as nama_karyawan 
+$result = mysqli_query($conn, "SELECT t.*, k.nama as nama_karyawan,
+                                COALESCE(t.nama_pembeli, 'Umum') as nama_pembeli_display
                                 FROM transaksi t 
-                                LEFT JOIN customer c ON t.id_customer = c.id_customer
                                 JOIN karyawan k ON t.id_karyawan = k.id_karyawan
                                 ORDER BY t.tanggal DESC");
 ?>
@@ -58,7 +58,7 @@ $result = mysqli_query($conn, "SELECT t.*, c.nama as nama_customer, k.nama as na
                                 <td class="px-6 py-4"><?= $no++; ?></td>
                                 <td class="px-6 py-4 font-medium"><?= htmlspecialchars($row['id_transaksi']); ?></td>
                                 <td class="px-6 py-4"><?= date('d/m/Y', strtotime($row['tanggal'])); ?></td>
-                                <td class="px-6 py-4"><?= htmlspecialchars($row['nama_customer'] ?? 'Umum'); ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($row['nama_pembeli_display'] ?? 'Umum'); ?></td>
                                 <td class="px-6 py-4"><?= htmlspecialchars($row['nama_karyawan']); ?></td>
                                 <td class="px-6 py-4 font-semibold text-green-600">
                                     Rp <?= number_format($row['total'], 0, ',', '.'); ?>

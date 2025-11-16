@@ -9,7 +9,14 @@ if (!isset($_SESSION['username'])) {
 
 // Ambil data produk dan supplier
 $produk_result = mysqli_query($conn, "SELECT * FROM produk ORDER BY nama_produk");
+if (!$produk_result) {
+    $produk_result = false;
+}
+
 $supplier_result = mysqli_query($conn, "SELECT * FROM supplier ORDER BY nama");
+if (!$supplier_result) {
+    $supplier_result = false;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -32,10 +39,13 @@ $supplier_result = mysqli_query($conn, "SELECT * FROM supplier ORDER BY nama");
                     <select name="id_supplier" required class="w-full p-2 border rounded">
                         <option value="">Pilih Supplier</option>
                         <?php 
-                        mysqli_data_seek($supplier_result, 0);
-                        while ($s = mysqli_fetch_assoc($supplier_result)): ?>
-                            <option value="<?= $s['id_supplier']; ?>"><?= htmlspecialchars($s['nama']); ?></option>
-                        <?php endwhile; ?>
+                        if ($supplier_result && mysqli_num_rows($supplier_result) > 0) {
+                            mysqli_data_seek($supplier_result, 0);
+                            while ($s = mysqli_fetch_assoc($supplier_result)): ?>
+                                <option value="<?= $s['id_supplier']; ?>"><?= htmlspecialchars($s['nama']); ?></option>
+                            <?php endwhile;
+                        }
+                        ?>
                     </select>
                     <p class="text-xs text-gray-500 mt-1">
                         <a href="supplier.php" class="text-blue-600 hover:underline">Tambah supplier baru</a>
@@ -47,13 +57,17 @@ $supplier_result = mysqli_query($conn, "SELECT * FROM supplier ORDER BY nama");
                     <select name="id_produk" required class="w-full p-2 border rounded" onchange="updateStok()">
                         <option value="">Pilih Produk</option>
                         <?php 
-                        mysqli_data_seek($produk_result, 0);
-                        while ($p = mysqli_fetch_assoc($produk_result)): 
+                        if ($produk_result && mysqli_num_rows($produk_result) > 0) {
+                            mysqli_data_seek($produk_result, 0);
+                            while ($p = mysqli_fetch_assoc($produk_result)): 
+                            ?>
+                                <option value="<?= $p['id_produk']; ?>" data-stok="<?= $p['stok']; ?>">
+                                    <?= htmlspecialchars($p['nama_produk']); ?> (Stok: <?= $p['stok']; ?>)
+                                </option>
+                            <?php 
+                            endwhile;
+                        }
                         ?>
-                            <option value="<?= $p['id_produk']; ?>" data-stok="<?= $p['stok']; ?>">
-                                <?= htmlspecialchars($p['nama_produk']); ?> (Stok: <?= $p['stok']; ?>)
-                            </option>
-                        <?php endwhile; ?>
                     </select>
                 </div>
 
