@@ -9,24 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
     $password = $_POST['password'] ?? '';
     
     if (!empty($login_input) && !empty($password)) {
-        // Cek apakah input adalah angka (untuk id_karyawan)
-        $is_numeric = is_numeric($login_input);
-        
-        // Gunakan prepared statement untuk mencari berdasarkan id_karyawan, username, atau nama
-        if ($is_numeric) {
-            // Jika numeric, cari berdasarkan id_karyawan (integer) atau username/nama (string)
-            $stmt = mysqli_prepare($conn, "SELECT * FROM karyawan WHERE id_karyawan = ? OR username = ? OR nama = ?");
-            if ($stmt) {
-                // Convert ke integer untuk id_karyawan, string untuk yang lain
-                $id_karyawan = (int)$login_input;
-                mysqli_stmt_bind_param($stmt, "iss", $id_karyawan, $login_input, $login_input);
-            }
-        } else {
-            // Jika bukan numeric, hanya cari berdasarkan username atau nama
-            $stmt = mysqli_prepare($conn, "SELECT * FROM karyawan WHERE username = ? OR nama = ?");
-            if ($stmt) {
-                mysqli_stmt_bind_param($stmt, "ss", $login_input, $login_input);
-            }
+        // Cari berdasarkan ID karyawan, username, atau nama (semua bertipe string)
+        $stmt = mysqli_prepare($conn, "SELECT * FROM karyawan WHERE id_karyawan = ? OR username = ? OR nama = ? LIMIT 1");
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "sss", $login_input, $login_input, $login_input);
         }
         
         if ($stmt) {
@@ -35,7 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
             $data = mysqli_fetch_assoc($result);
             mysqli_stmt_close($stmt);
             
-            if ($data && password_verify($password, $data['password'])) {
+            $password_match = password_verify($password, $data['password']) || $password === $data['password'];
+
+            if ($data && $password_match) {
                 $_SESSION['username'] = $data['username'];
                 $_SESSION['nama'] = $data['nama'];
                 $_SESSION['role'] = $data['role'];
