@@ -11,7 +11,7 @@
     <div class="flex min-h-screen items-center justify-center px-4">
         <div class="w-full max-w-sm bg-white shadow-lg rounded-xl p-6">
 
-            <h2 class="text-center text-2xl font-bold mb-6">Login Karyawan</h2>
+            <h2 class="text-center text-2xl font-bold mb-6 text-gray-700">Login Karyawan</h2>
 
             <?php if (isset($_GET['error'])): ?>
                 <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
@@ -33,7 +33,7 @@
 
             <form action="login_poses.php" method="POST" class="space-y-5">
                 <div>
-                    <label class="text-sm font-medium">ID Karyawan / Username / Nama</label>
+                    <label class="text-white text-sm font-medium">ID Karyawan / Username / Nama</label>
                     <input name="username" type="text" required
                         placeholder="Masukkan ID, Username, atau Nama"
                         class="w-full p-2 border rounded mt-1">
@@ -41,7 +41,7 @@
                 </div>
 
                 <div>
-                    <label class="text-sm font-medium">Password</label>
+                    <label class="text-white text-sm font-medium">Password</label>
                     <input name="password" type="password" required
                         class="w-full p-2 border rounded mt-1">
                 </div>

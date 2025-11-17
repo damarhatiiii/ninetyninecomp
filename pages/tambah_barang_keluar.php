@@ -18,7 +18,7 @@ $produk_result = mysqli_query($conn, "SELECT * FROM produk WHERE stok > 0 ORDER 
     <title>Tambah Barang Keluar</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-900">
     <?php include '../includes/navbar.php'; ?>
     
     <div class="p-6">
