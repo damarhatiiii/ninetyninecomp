@@ -1,4 +1,4 @@
-# Toko Komputer - Sistem Manajemen Toko
+# ninetyninecomp - Sistem Manajemen Toko
 
 Sistem manajemen toko komputer berbasis web dengan PHP dan MySQL untuk mengelola produk, transaksi, stok, dan aktivitas karyawan.
 
@@ -19,10 +19,11 @@ Sistem manajemen toko komputer berbasis web dengan PHP dan MySQL untuk mengelola
 
 ### 3. **Manajemen Karyawan**
 - Daftar karyawan
-- Tambah karyawan baru
+- Tambah karyawan baru dengan **auto-generate ID** (format: `KRY001`, `KRY002`, dst.)
 - Hapus karyawan
 - Role: Admin dan Staf
 - Login tracking
+- **Sinkronisasi otomatis**: ID karyawan otomatis tersinkron di tabel `aktifitas`, `barang_keluar`, dan `transaksi`
 
 ### 4. **Manajemen Customer & Supplier**
 - Daftar customer
@@ -32,11 +33,12 @@ Sistem manajemen toko komputer berbasis web dengan PHP dan MySQL untuk mengelola
 
 ### 5. **Transaksi Penjualan**
 - Form transaksi dengan multi-produk
-- Pilih customer (opsional)
+- Pilih customer (opsional) atau **auto-generate customer baru** jika nama pembeli belum terdaftar
 - Auto-calculate total
 - Update stok otomatis saat transaksi
 - Detail transaksi dengan struk
 - Cetak struk
+- **Sinkronisasi otomatis**: `id_customer` dan `id_karyawan` otomatis tersinkron di tabel `transaksi`
 
 ### 6. **Barang Masuk**
 - Form penerimaan barang dari supplier
@@ -63,10 +65,10 @@ Sistem manajemen toko komputer berbasis web dengan PHP dan MySQL untuk mengelola
 ### Tabel Utama
 
 #### `karyawan`
-- `id_karyawan` (VARCHAR) - Primary Key
+- `id_karyawan` (VARCHAR) - Primary Key, **Auto-generated** (format: `KRY001`, `KRY002`, dst.)
 - `nama` (VARCHAR)
 - `username` (VARCHAR)
-- `password` (VARCHAR) - Hashed
+- `password` (VARCHAR) - Hashed dengan `password_hash()` (bcrypt)
 - `role` (ENUM: admin, staf)
 
 #### `produk`
@@ -83,9 +85,10 @@ Sistem manajemen toko komputer berbasis web dengan PHP dan MySQL untuk mengelola
 - `nama_kategori` (VARCHAR)
 
 #### `customer`
-- `id_customer` (VARCHAR) - Primary Key
+- `id_customer` (VARCHAR) - Primary Key, **Auto-generated** (format: `CUS001`, `CUS002`, dst.)
 - `nama` (TEXT)
 - `email` (TEXT)
+- **Auto-generate**: Customer baru otomatis dibuat saat transaksi jika nama pembeli belum terdaftar
 
 #### `supplier`
 - `id_supplier` (VARCHAR) - Primary Key
@@ -95,11 +98,12 @@ Sistem manajemen toko komputer berbasis web dengan PHP dan MySQL untuk mengelola
 - `telepon` (INT)
 
 #### `transaksi`
-- `id_transaksi` (VARCHAR) - Primary Key
+- `id_transaksi` (VARCHAR) - Primary Key, **Auto-generated** (format: `TRX001`, `TRX002`, dst.)
 - `tanggal` (DATE)
 - `total` (INT)
-- `id_customer` (VARCHAR) - Foreign Key
-- `id_karyawan` (VARCHAR) - Foreign Key
+- `id_customer` (VARCHAR) - Foreign Key, **Auto-generated** jika customer baru
+- `nama_pembeli` (VARCHAR) - Nama pembeli (wajib diisi)
+- `id_karyawan` (VARCHAR) - Foreign Key, **Auto-sinkron** dari session login
 
 #### `detail_transaksi`
 - `id_detail` (VARCHAR) - Primary Key
@@ -117,15 +121,15 @@ Sistem manajemen toko komputer berbasis web dengan PHP dan MySQL untuk mengelola
 - `id_karyawan` (VARCHAR) - Foreign Key
 
 #### `barang_keluar`
-- `id_keluar` (VARCHAR) - Primary Key
+- `id_keluar` (VARCHAR) - Primary Key, **Auto-generated** (format: `BK001`, `BK002`, dst.)
 - `id_produk` (VARCHAR) - Foreign Key
 - `jumlah_keluar` (INT)
 - `tanggal` (DATE)
-- `id_karyawan` (VARCHAR) - Foreign Key
+- `id_karyawan` (VARCHAR) - Foreign Key, **Auto-sinkron** dari session login
 
 #### `aktifitas`
 - `id_aktifitas` (INT) - Primary Key, Auto Increment
-- `id_karyawan` (VARCHAR) - Foreign Key
+- `id_karyawan` (VARCHAR) - Foreign Key, **Auto-sinkron** dari session login
 - `jenis_aktifitas` (ENUM: barang_masuk, barang_keluar, transaksi)
 - `keterangan` (TEXT)
 - `tanggal` (DATETIME)
@@ -214,13 +218,25 @@ $dbname = 'toko_komputer';
 ## 🔑 Login
 
 Sistem login mendukung 3 cara:
-1. **ID Karyawan** (contoh: `ADM001`)
+1. **ID Karyawan** (contoh: `KRY001`, `KRY002`, dst.)
 2. **Username** (contoh: `admin`)
 3. **Nama** (contoh: `Admin`)
 
-Password akan otomatis di-hash jika masih plain text saat login pertama kali.
+**Catatan:**
+- Password disimpan dalam format **bcrypt hash** (contoh: `$2y$10$...`) untuk keamanan
+- Password akan otomatis di-hash jika masih plain text saat login pertama kali
+- Password asli **tidak bisa** dilihat kembali dari database (one-way encryption)
 
 ## 📝 Cara Penggunaan
+
+### Menambah Karyawan Baru
+1. Login sebagai Admin
+2. Klik menu **Karyawan**
+3. Klik tombol **+ Tambah Karyawan**
+4. Isi form: Nama, Username, Password, Role
+5. Simpan
+6. **ID Karyawan otomatis ter-generate** (format: `KRY001`, `KRY002`, dst.)
+7. Login bisa menggunakan ID, Username, atau Nama
 
 ### Menambah Produk
 1. Login sebagai Admin/Staf
@@ -231,11 +247,14 @@ Password akan otomatis di-hash jika masih plain text saat login pertama kali.
 ### Melakukan Transaksi
 1. Klik menu **Aktifitas**
 2. Klik tombol **+ Transaksi**
-3. Pilih customer (opsional)
+3. Masukkan **Nama Pembeli** (wajib)
+   - Jika nama sudah terdaftar sebagai customer, akan otomatis ter-link
+   - Jika nama belum terdaftar, **customer baru otomatis dibuat** dengan ID `CUS001`, `CUS002`, dst.
 4. Pilih produk yang akan dibeli
 5. Atur jumlah
 6. Klik **Simpan Transaksi**
 7. Stok otomatis berkurang
+8. **ID Karyawan dan ID Customer otomatis tersinkron** di tabel transaksi
 
 ### Menerima Barang Masuk
 1. Klik menu **Aktifitas**
@@ -267,12 +286,18 @@ Password akan otomatis di-hash jika masih plain text saat login pertama kali.
 
 ### Auto-Generate ID
 Sistem otomatis generate ID untuk:
-- Transaksi: `TRX001`, `TRX002`, dst.
-- Customer: `CUS001`, `CUS002`, dst.
-- Supplier: `SUP001`, `SUP002`, dst.
-- Barang Masuk: `BM001`, `BM002`, dst.
-- Barang Keluar: `BK001`, `BK002`, dst.
-- Detail Transaksi: `DTL001`, `DTL002`, dst.
+- **Karyawan**: `KRY001`, `KRY002`, dst. (saat tambah karyawan baru)
+- **Transaksi**: `TRX001`, `TRX002`, dst.
+- **Customer**: `CUS001`, `CUS002`, dst. (saat tambah customer atau transaksi dengan pembeli baru)
+- **Supplier**: `SUP001`, `SUP002`, dst.
+- **Barang Masuk**: `BM001`, `BM002`, dst.
+- **Barang Keluar**: `BK001`, `BK002`, dst.
+- **Detail Transaksi**: `DTL001`, `DTL002`, dst.
+
+### Auto-Sinkronisasi ID
+Sistem otomatis menyinkronkan ID di berbagai tabel:
+- **`id_karyawan`**: Otomatis tersinkron di tabel `aktifitas`, `barang_keluar`, dan `transaksi` dari session login
+- **`id_customer`**: Otomatis tersinkron di tabel `transaksi` (auto-generate jika customer baru)
 
 ### Auto-Update Stok
 - **Transaksi**: Stok berkurang otomatis
@@ -308,15 +333,29 @@ Setiap aktivitas (transaksi, barang masuk, barang keluar) otomatis tercatat di t
 - Cek koneksi database di `config/db.php`
 
 ### Error: Login tidak berhasil
-- Pastikan password di database sudah di-hash
+- Pastikan password di database sudah di-hash dengan format bcrypt (`$2y$10$...`)
 - Cek apakah username/ID/nama ada di database
+- Pastikan format ID karyawan sesuai (contoh: `KRY001`, bukan angka saja)
 - Lihat error log PHP untuk detail error
+
+### Password di Database
+- Password disimpan dalam format **bcrypt hash** (contoh: `$2y$10$24HPranGAzz5RZ3/3K3kjuzUfNBIURQwsKJmvEM37jwS1HU9KMzkS`)
+- **Password asli tidak bisa dilihat** dari database (one-way encryption)
+- Untuk reset password, gunakan form tambah karyawan atau update langsung di database dengan hash baru
+- Generate hash baru dengan PHP: `password_hash('password_baru', PASSWORD_DEFAULT)`
 
 ### Error: Path tidak ditemukan
 - Pastikan struktur folder sesuai dengan dokumentasi
 - Cek semua path include sudah benar (menggunakan `../` jika perlu)
 
 ## 📅 Changelog
+
+### Update Terbaru - Auto-Generate & Sinkronisasi ID
+- ✅ **Auto-generate ID Karyawan**: Format `KRY001`, `KRY002`, dst. saat tambah karyawan baru
+- ✅ **Auto-generate ID Customer**: Format `CUS001`, `CUS002`, dst. saat transaksi dengan pembeli baru
+- ✅ **Sinkronisasi `id_karyawan`**: Otomatis tersinkron di tabel `aktifitas`, `barang_keluar`, dan `transaksi` dari session login
+- ✅ **Sinkronisasi `id_customer`**: Otomatis tersinkron di tabel `transaksi` (auto-generate jika customer baru)
+- ✅ Perbaikan sistem login untuk support format ID baru (KRY001, dst.)
 
 ### 15 November 2025 (Sesi Development)
 - ✅ Perbaikan semua path file
@@ -327,19 +366,21 @@ Setiap aktivitas (transaksi, barang masuk, barang keluar) otomatis tercatat di t
 - ✅ Penambahan fitur aktifitas dengan tab
 - ✅ Integrasi semua fitur ke halaman Aktifitas
 - ✅ Penyesuaian dengan struktur database yang ada
+
+### 18 November 2025 (Sesi Development)
 - ✅ Auto-generate ID untuk semua entitas
 - ✅ Auto-update stok
 - ✅ Auto-log aktifitas
 
 ## 👤 Developer
 
-Dikembangkan untuk sistem manajemen toko komputer.
+Dikembangkan oleh damarhatii untuk tugas sistem basis data.
 
 ## 📄 License
 
-Proyek internal - All rights reserved.
+Proyek internal (Kuliah) - All rights reserved.
 
 ---
 
-**Selamat menggunakan sistem manajemen toko komputer!** 🎉
+**Selamat menggunakan sistem manajemen ninetyninecomp!** 🎉
 
