@@ -44,6 +44,11 @@ function generateIdSupplier($conn) {
     return generateId($conn, 'SUP', 'supplier', 'id_supplier');
 }
 
+// Generate ID untuk karyawan
+function generateIdKaryawan($conn) {
+    return generateId($conn, 'KRY', 'karyawan', 'id_karyawan');
+}
+
 // Generate ID untuk barang masuk
 function generateIdMasuk($conn) {
     return generateId($conn, 'BM', 'barang_masuk', 'id_masuk');
