@@ -55,7 +55,7 @@ $produk_result = mysqli_query($conn, "SELECT * FROM produk WHERE stok > 0 ORDER 
                 </div>
 
                 <div class="flex gap-2">
-                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                    <button type="submit" class="bg-blue-700 text-white px-6 py-2 rounded hover:bg-blue-800">
                         Simpan
                     </button>
                     <a href="aktifitas.php?tab=barang_keluar" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">

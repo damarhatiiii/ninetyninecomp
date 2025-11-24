@@ -49,7 +49,7 @@ $data = mysqli_fetch_assoc($q);
                         class="w-full p-2 mb-4 border rounded bg-gray-700 text-white">
 
                     <button
-                        class="bg-blue-600 text-white w-full py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        class="bg-blue-700 text-white w-full py-2 rounded-lg font-semibold hover:bg-blue-800 transition">
                         Simpan Perubahan
                     </button>
 

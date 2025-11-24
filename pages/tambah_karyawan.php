@@ -43,7 +43,7 @@ if (!isset($_SESSION['username'])) {
             <option value="staf">Staf</option>
         </select>
 
-        <button class="bg-blue-600 hover:bg-blue-700 w-full py-2 rounded-lg font-semibold">
+        <button class="bg-blue-700 hover:bg-blue-800 w-full py-2 rounded-lg font-semibold">
             Simpan
         </button>
     </form>

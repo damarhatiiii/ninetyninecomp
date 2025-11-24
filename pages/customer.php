@@ -47,7 +47,7 @@ $result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama ASC");
                     </div>
                     <div class="col-span-2 flex gap-2">
                         <button type="submit" 
-                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800">
                             Simpan
                         </button>
                         <button type="button" onclick="hideAddForm()"

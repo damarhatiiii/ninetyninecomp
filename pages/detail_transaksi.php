@@ -127,7 +127,7 @@ $detail = mysqli_stmt_get_result($stmt2);
             </table>
 
             <div class="flex gap-2">
-                <a href="cetak_struk.php?id=<?= $id_transaksi; ?>" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                <a href="cetak_struk.php?id=<?= $id_transaksi; ?>" target="_blank" class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800">
                     Cetak Struk
                 </a>
                 <a href="<?= $back_url; ?>" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">

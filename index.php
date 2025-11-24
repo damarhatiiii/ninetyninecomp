@@ -45,64 +45,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
 <head>
     <meta charset="UTF-8">
     <title>Login - Toko Komputer</title>
-    <link href="assets/css/output.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <?php if (isset($_GET['success'])): ?>
-    <div role="alert" class="alert alert-success mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span>Data berhasil disimpan!</span>
-    </div>
-    <?php endif; ?>
-
-    <?php if (isset($_GET['error']) || isset($error)): ?>
-    <div role="alert" class="alert alert-error mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2 2m0 0l2-2m-2 2V10m11 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span><?= isset($error) ? $error : 'ID Karyawan, Username, Nama, atau password salah!'; ?></span>
-    </div>
-    <?php endif; ?>
-
-    <div class="flex min-h-full flex-col justify-center px-12 py-12 lg:px-8">
+<body class="bg-gray-100">
+    <div class="flex min-h-screen flex-col justify-center px-4 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 class="mt-15 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Login Karyawan</h2>
-    </div>
+        <div class="bg-white shadow-lg rounded-xl p-6">
+            <h2 class="text-center text-2xl font-bold mb-6 text-gray-800">Login Karyawan</h2>
 
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form action="" method="POST" class="space-y-6">
-    <div>
-        <label for="username" class="block text-sm/6 font-medium text-gray-900">ID Karyawan / Username / Nama</label>
-        <div class="mt-2">
-        <input name="username" type="text" required autocomplete="username"
-            placeholder="Masukkan ID, Username, atau Nama"
-            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+            <?php if (isset($_GET['success'])): ?>
+                <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
+                    Data berhasil disimpan!
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($_GET['error']) || isset($error)): ?>
+                <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
+                    <?= isset($error) ? htmlspecialchars($error) : 'ID Karyawan, Username, Nama, atau password salah!'; ?>
+                </div>
+            <?php endif; ?>
+
+            <form action="" method="POST" class="space-y-5">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">ID Karyawan / Username / Nama</label>
+                    <input name="username" type="text" required autocomplete="username"
+                        placeholder="Masukkan ID, Username, atau Nama"
+                        class="w-full p-2 border border-gray-300 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
+                    <p class="text-xs text-gray-500 mt-1">Anda bisa login menggunakan ID Karyawan, Username, atau Nama</p>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input name="password" type="password" required autocomplete="current-password"
+                        class="w-full p-2 border border-gray-300 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
+                </div>
+
+                <button name="login" type="submit"
+                    class="w-full bg-blue-700 text-white py-2 rounded-md hover:bg-blue-800 transition-colors font-medium">
+                    Login
+                </button>
+            </form>
         </div>
-        <p class="mt-1 text-xs text-gray-500">Anda bisa login menggunakan ID Karyawan, Username, atau Nama</p>
-    </div>
-
-    <div>
-        <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
-        <div class="mt-2">
-        <input name="password" type="password" required autocomplete="current-password"
-            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-        </div>
-    </div>
-
-    <div>
-        <button name="login" type="submit"
-        class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-        Sign in
-        </button>
-    </div>
-    </form>
     </div>
     </div>
-<?php if (!empty($error)) echo "<p style='color:red'>$error</p>"; ?>
 </body>
 </html>
 
