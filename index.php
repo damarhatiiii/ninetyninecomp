@@ -9,29 +9,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
     $password = $_POST['password'] ?? '';
     
     if (!empty($login_input) && !empty($password)) {
-        // Cari berdasarkan ID karyawan, username, atau nama (semua bertipe string)
+        // id_karyawan adalah VARCHAR (format: KRY001), jadi semua input adalah string
+        // Cari berdasarkan id_karyawan, username, atau nama (semua bertipe string)
         $stmt = mysqli_prepare($conn, "SELECT * FROM karyawan WHERE id_karyawan = ? OR username = ? OR nama = ? LIMIT 1");
-        if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "sss", $login_input, $login_input, $login_input);
-        }
         
         if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "sss", $login_input, $login_input, $login_input);
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
             $data = mysqli_fetch_assoc($result);
             mysqli_stmt_close($stmt);
             
-            $password_match = password_verify($password, $data['password']) || $password === $data['password'];
-
-            if ($data && $password_match) {
-                $_SESSION['username'] = $data['username'];
-                $_SESSION['nama'] = $data['nama'];
-                $_SESSION['role'] = $data['role'];
-                $_SESSION['id_karyawan'] = $data['id_karyawan'];
+            // Cek apakah data ditemukan dan password cocok
+            if ($data) {
+                // Cek password dengan password_verify (jika di-hash) atau plain text (untuk kompatibilitas)
+                $password_match = false;
                 
-                header("Location: pages/dashboard.php");
-                exit;
+                if (password_verify($password, $data['password'])) {
+                    $password_match = true;
+                } elseif ($data['password'] === $password) {
+                    // Fallback: cek plain text (untuk data lama yang belum di-hash)
+                    $password_match = true;
+                }
+                
+                if ($password_match) {
+                    $_SESSION['username'] = $data['username'];
+                    $_SESSION['nama'] = $data['nama'];
+                    $_SESSION['role'] = $data['role'];
+                    $_SESSION['id_karyawan'] = $data['id_karyawan'];
+                    
+                    header("Location: pages/dashboard.php");
+                    exit;
+                }
             }
+        } else {
+            // Jika prepared statement gagal, log error untuk debugging
+            error_log("Login error: " . mysqli_error($conn));
         }
     }
     
@@ -57,6 +70,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
             <?php if (isset($_GET['success'])): ?>
                 <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
                     Data berhasil disimpan!
+                </div>
+            <?php endif; ?>
+
+            <?php 
+            // Cek apakah ada user di database
+            if (!isset($conn)) {
+                include 'config/db.php';
+            }
+            $check = mysqli_query($conn, "SELECT COUNT(*) as total FROM karyawan");
+            $row = mysqli_fetch_assoc($check);
+            if ($row['total'] == 0): ?>
+                <div class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
+                    <strong>Belum ada user di database!</strong> 
+                    <p class="text-sm mt-1">Silakan buat user pertama melalui phpMyAdmin atau hubungi administrator.</p>
                 </div>
             <?php endif; ?>
 

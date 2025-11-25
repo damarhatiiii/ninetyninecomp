@@ -64,25 +64,25 @@ $nama_pembeli = !empty($t['nama_pembeli']) ? $t['nama_pembeli'] : 'Umum';
             }
             @page {
                 size: 80mm auto;
-                margin: 5mm;
+                margin: 6mm;
             }
         }
         body {
             font-family: 'Courier New', monospace;
-            max-width: 80mm;
+            max-width: 130mm;
             margin: 0 auto;
-            padding: 10px;
+            padding: 15px;
             background: white;
         }
         .header {
             text-align: center;
             border-bottom: 2px dashed #000;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
         }
         .header h1 {
             font-size: 18px;
-            margin: 5px 0;
+            margin: 6px 0;
             font-weight: bold;
         }
         .header p {
@@ -90,13 +90,13 @@ $nama_pembeli = !empty($t['nama_pembeli']) ? $t['nama_pembeli'] : 'Umum';
             margin: 2px 0;
         }
         .info {
-            margin: 10px 0;
+            margin: 12px 0;
             font-size: 11px;
         }
         .info-row {
             display: flex;
             justify-content: space-between;
-            margin: 3px 0;
+            margin: 4px 0;
         }
         .info-label {
             font-weight: bold;
@@ -104,16 +104,16 @@ $nama_pembeli = !empty($t['nama_pembeli']) ? $t['nama_pembeli'] : 'Umum';
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0;
+            margin: 15px 0;
             font-size: 11px;
         }
         table th {
             text-align: left;
             border-bottom: 1px dashed #000;
-            padding: 5px 0;
+            padding: 6px 0;
         }
         table td {
-            padding: 3px 0;
+            padding: 8px 0;
         }
         .text-right {
             text-align: right;
@@ -129,20 +129,23 @@ $nama_pembeli = !empty($t['nama_pembeli']) ? $t['nama_pembeli'] : 'Umum';
         .total-row {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
-            margin: 5px 0;
+            margin: 2px 0;
         }
         .footer {
             text-align: center;
-            margin-top: 20px;
-            padding-top: 10px;
+            margin-top: 18px;
+            padding-top: 12px;
             border-top: 2px dashed #000;
             font-size: 10px;
         }
+        .footer p {
+            margin: 3px 0;
+        }
         .print-btn {
             text-align: center;
-            margin: 20px 0;
+            margin: 25px 0;
         }
         .print-btn button {
             background: #2563eb;
@@ -189,8 +192,8 @@ $nama_pembeli = !empty($t['nama_pembeli']) ? $t['nama_pembeli'] : 'Umum';
             <tr>
                 <th>Item</th>
                 <th class="text-center">Qty</th>
-                <th class="text-right">Harga</th>
-                <th class="text-right">Subtotal</th>
+                <th class="text-center">Harga</th>
+                <th class="text-center">Subtotal</th>
             </tr>
         </thead>
         <tbody>
@@ -201,8 +204,8 @@ $nama_pembeli = !empty($t['nama_pembeli']) ? $t['nama_pembeli'] : 'Umum';
             <tr>
                 <td><?= htmlspecialchars($d['nama_produk']); ?></td>
                 <td class="text-center"><?= $d['jumlah']; ?></td>
-                <td class="text-right"><?= number_format($d['harga_satuan'], 0, ',', '.'); ?></td>
-                <td class="text-right"><?= number_format($d['subtotal'], 0, ',', '.'); ?></td>
+                <td class="text-center"><?= number_format($d['harga_satuan'], 0, ',', '.'); ?></td>
+                <td class="text-center"><?= number_format($d['subtotal'], 0, ',', '.'); ?></td>
             </tr>
             <?php endwhile; ?>
         </tbody>
@@ -225,14 +228,14 @@ $nama_pembeli = !empty($t['nama_pembeli']) ? $t['nama_pembeli'] : 'Umum';
         <button onclick="window.print()">Cetak Struk</button>
     </div>
 
-    <script>
-        // Auto print saat halaman dimuat
+    <!-- <script>
+        // Auto print
         window.onload = function() {
             setTimeout(function() {
                 window.print();
             }, 500);
         };
-    </script>
+    </script> -->
 </body>
 </html>
 

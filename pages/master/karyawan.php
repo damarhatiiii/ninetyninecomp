@@ -9,7 +9,12 @@ if (!isset($_SESSION['username'])) {
 }
 
 // Ambil data karyawan dari database
-$result = mysqli_query($conn, "SELECT * FROM karyawan");
+$result = mysqli_query($conn, "SELECT * FROM karyawan ORDER BY id_karyawan ASC");
+
+// Cek jika query gagal
+if (!$result) {
+    die("Error: " . mysqli_error($conn));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
