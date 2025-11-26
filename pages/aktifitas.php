@@ -62,22 +62,22 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
 <body>
     <?php include '../includes/navbar.php'; ?>
     
-    <div class="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <div class="p-6 bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-6">
-                <div class="flex items-center justify-between border-b pb-3 mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Aktifitas</h2>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <div class="flex items-center justify-between border-b border-gray-200 pb-3 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Aktifitas</h2>
                     <div class="flex gap-2">
                         <a href="transaksi/tambah_transaksi.php" 
-                            class="inline-block bg-blue-700 hover:bg-blue-800 text-white font-medium px-4 py-2 rounded-lg text-sm">
+                            class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 shadow-sm hover:shadow-md">
                             + Transaksi
                         </a>
                         <a href="barang/tambah_barang_masuk.php" 
-                            class="inline-block bg-green-700 hover:bg-green-800 text-white font-medium px-4 py-2 rounded-lg text-sm">
+                            class="inline-block bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 shadow-sm hover:shadow-md">
                             + Barang Masuk
                         </a>
                         <a href="barang/tambah_barang_keluar.php" 
-                            class="inline-block bg-orange-700 hover:bg-orange-800 text-white font-medium px-4 py-2 rounded-lg text-sm">
+                            class="inline-block bg-orange-600 hover:bg-orange-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 shadow-sm hover:shadow-md">
                             + Barang Keluar
                         </a>
                     </div>
@@ -90,7 +90,7 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                 <?php endif; ?>
 
                 <!-- Tabs -->
-                <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
+                <div class="border-b border-gray-200 mb-6">
                     <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
                         <li class="me-2">
                             <a href="?tab=transaksi" 
@@ -122,8 +122,8 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                 <!-- Tab Content: Transaksi -->
                 <?php if ($active_tab == 'transaksi'): ?>
                 <div class="relative overflow-x-auto rounded-lg shadow-sm">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-300">
-                        <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-700">
+                        <thead class="text-xs uppercase bg-gray-100 text-gray-700">
                             <tr>
                                 <th class="px-6 py-3">No</th>
                                 <th class="px-6 py-3">ID Transaksi</th>
@@ -141,7 +141,7 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                                 mysqli_data_seek($transaksi_result, 0);
                                 while ($row = mysqli_fetch_assoc($transaksi_result)): 
                             ?>
-                            <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                            <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4"><?= $no++; ?></td>
                                 <td class="px-6 py-4 font-medium"><?= htmlspecialchars($row['id_transaksi']); ?></td>
                                 <td class="px-6 py-4"><?= date('d/m/Y', strtotime($row['tanggal'])); ?></td>
@@ -169,8 +169,8 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                 <!-- Tab Content: Barang Masuk -->
                 <?php if ($active_tab == 'barang_masuk'): ?>
                 <div class="relative overflow-x-auto rounded-lg shadow-sm">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-300">
-                        <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-700">
+                        <thead class="text-xs uppercase bg-gray-100 text-gray-700">
                             <tr>
                                 <th class="px-6 py-3">No</th>
                                 <th class="px-6 py-3">ID</th>
@@ -188,7 +188,7 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                                 mysqli_data_seek($barang_masuk_result, 0);
                                 while ($row = mysqli_fetch_assoc($barang_masuk_result)): 
                             ?>
-                            <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                            <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4"><?= $no++; ?></td>
                                 <td class="px-6 py-4 font-medium"><?= htmlspecialchars($row['id_masuk']); ?></td>
                                 <td class="px-6 py-4"><?= date('d/m/Y', strtotime($row['tanggal'])); ?></td>
@@ -211,8 +211,8 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                 <!-- Tab Content: Barang Keluar -->
                 <?php if ($active_tab == 'barang_keluar'): ?>
                 <div class="relative overflow-x-auto rounded-lg shadow-sm">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-300">
-                        <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-700">
+                        <thead class="text-xs uppercase bg-gray-100 text-gray-700">
                             <tr>
                                 <th class="px-6 py-3">No</th>
                                 <th class="px-6 py-3">ID</th>
@@ -229,7 +229,7 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                                 mysqli_data_seek($barang_keluar_result, 0);
                                 while ($row = mysqli_fetch_assoc($barang_keluar_result)): 
                             ?>
-                            <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                            <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4"><?= $no++; ?></td>
                                 <td class="px-6 py-4 font-medium"><?= htmlspecialchars($row['id_keluar']); ?></td>
                                 <td class="px-6 py-4"><?= date('d/m/Y', strtotime($row['tanggal'])); ?></td>
@@ -251,8 +251,8 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                 <!-- Tab Content: Log Aktifitas -->
                 <?php if ($active_tab == 'log'): ?>
                 <div class="relative overflow-x-auto rounded-lg shadow-sm">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-300">
-                        <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-700">
+                        <thead class="text-xs uppercase bg-gray-100 text-gray-700">
                             <tr>
                                 <th class="px-6 py-3">No</th>
                                 <th class="px-6 py-3">Tanggal</th>
@@ -280,7 +280,7 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                                             break;
                                     }
                             ?>
-                            <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                            <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4"><?= $no++; ?></td>
                                 <td class="px-6 py-4"><?= date('d/m/Y H:i', strtotime($row['tanggal'])); ?></td>
                                 <td class="px-6 py-4 font-medium"><?= htmlspecialchars($row['nama_karyawan']); ?></td>

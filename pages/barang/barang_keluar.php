@@ -25,20 +25,20 @@ $result = mysqli_query($conn, "SELECT bk.*, p.nama_produk, k.nama as nama_karyaw
 <body>
     <?php include '../../includes/navbar.php'; ?>
     
-    <div class="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen pb-20">
+    <div class="p-6 bg-gray-50 min-h-screen pb-20">
         <div class="max-w-7xl mx-auto">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-6">
-                <div class="flex items-center justify-between border-b pb-3 mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Barang Keluar</h2>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <div class="flex items-center justify-between border-b border-gray-200 pb-3 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Barang Keluar</h2>
                     <a href="tambah_barang_keluar.php" 
-                        class="inline-block bg-blue-700 hover:bg-blue-800 text-white font-medium px-4 py-2 rounded-lg text-sm">
+                        class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 shadow-sm hover:shadow-md">
                         + Barang Keluar Baru
                     </a>
                 </div>
 
-                <div class="relative overflow-x-auto rounded-lg shadow-sm">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-300">
-                        <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                <div class="relative overflow-x-auto rounded-lg shadow-sm border border-gray-200">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-700">
+                        <thead class="text-xs uppercase bg-gray-100 text-gray-700">
                             <tr>
                                 <th class="px-6 py-3">No</th>
                                 <th class="px-6 py-3">Tanggal</th>
@@ -52,7 +52,7 @@ $result = mysqli_query($conn, "SELECT bk.*, p.nama_produk, k.nama as nama_karyaw
                             $no = 1;
                             while ($row = mysqli_fetch_assoc($result)): 
                             ?>
-                            <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                            <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4"><?= $no++; ?></td>
                                 <td class="px-6 py-4"><?= date('d/m/Y', strtotime($row['tanggal'])); ?></td>
                                 <td class="px-6 py-4"><?= htmlspecialchars($row['nama_produk']); ?></td>

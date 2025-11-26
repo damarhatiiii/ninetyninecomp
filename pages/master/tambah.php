@@ -58,17 +58,16 @@ if (isset($_POST['simpan'])) {
     <title>Tambah Produk</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900">
+<body class="bg-gray-50">
 
     <?php include '../../includes/navbar.php'; ?>
     
 
-    <div class="p-6 max-w-3xl mx-auto">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 border-b pb-3">
+    <div class="p-6 max-w-3xl mx-auto min-h-[calc(100vh-80px)] pb-20">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-3">
                 Tambah Produk Baru
             </h2>
 
@@ -76,30 +75,30 @@ if (isset($_POST['simpan'])) {
 
                 <!-- ID Produk -->
                 <div>
-                    <label for="id_produk" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                    <label for="id_produk" class="block mb-1 text-sm font-medium text-gray-700">
                         ID Produk
                     </label>
                     <input type="text" name="id_produk" id="id_produk" required
-                        class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white" />
+                        class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
                 </div>
 
                 <!-- Nama Produk -->
                 <div>
-                    <label for="nama_produk" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                    <label for="nama_produk" class="block mb-1 text-sm font-medium text-gray-700">
                         Nama Produk
                     </label>
                     <input type="text" name="nama_produk" id="nama_produk" required
-                        class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white" />
+                        class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
                 </div>
 
                 <!-- Kategori -->
                 <div>
-                    <label for="id_kategori" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                    <label for="id_kategori" class="block mb-1 text-sm font-medium text-gray-700">
                         Kategori
                     </label>
 
                     <select name="id_kategori" id="id_kategori" required
-                        class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white">
+                        class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
 
                         <option value="" disabled selected>Pilih Kategori</option>
 
@@ -114,45 +113,51 @@ if (isset($_POST['simpan'])) {
 
                 <!-- Merk -->
                 <div>
-                    <label for="merk" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                    <label for="merk" class="block mb-1 text-sm font-medium text-gray-700">
                         Merek
                     </label>
                     <input type="text" name="merk" id="merk" required
-                        class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white" />
+                        class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
                 </div>
 
                 <!-- Spesifikasi -->
                 <div>
-                    <label for="spesifikasi" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                    <label for="spesifikasi" class="block mb-1 text-sm font-medium text-gray-700">
                         Spesifikasi
                     </label>
                     <textarea name="spesifikasi" id="spesifikasi" rows="3"
-                        class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white"></textarea>
+                        class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"></textarea>
                 </div>
 
                 <!-- Harga & Stok -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="harga" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                        <label for="harga" class="block mb-1 text-sm font-medium text-gray-700">
                             Harga (Rp)
                         </label>
                         <input type="number" name="harga" id="harga" required
-                            class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white" />
+                            class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
                     </div>
 
                     <div>
-                        <label for="stok" class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                        <label for="stok" class="block mb-1 text-sm font-medium text-gray-700">
                             Stok
                         </label>
                         <input type="number" name="stok" id="stok" required
-                            class="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-700 dark:text-white" />
+                            class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
                     </div>
                 </div>
 
-                <button type="submit" name="simpan"
-                    class="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 font-semibold rounded-lg text-sm px-5 py-2.5">
-                    Simpan Produk
-                </button>
+                <div class="flex gap-2 pt-4">
+                    <button type="submit" name="simpan"
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm px-5 py-2.5 transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Simpan Produk
+                    </button>
+                    <a href="produk.php"
+                        class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg text-sm px-5 py-2.5 text-center transition-all duration-200">
+                        Batal
+                    </a>
+                </div>
 
             </form>
         </div>
