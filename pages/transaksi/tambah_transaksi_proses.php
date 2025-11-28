@@ -123,20 +123,6 @@ try {
         
         // Update stok produk
         mysqli_query($conn, "UPDATE produk SET stok = stok - $qty WHERE id_produk = '$id_produk'");
-        
-        // Generate ID barang keluar
-        $id_keluar = generateIdKeluar($conn);
-        
-        // Insert barang keluar
-        $stmt = mysqli_prepare($conn, "INSERT INTO barang_keluar (id_keluar, id_produk, jumlah_keluar, tanggal, id_karyawan) VALUES (?, ?, ?, ?, ?)");
-        if (!$stmt) {
-            throw new Exception("Error preparing statement: " . mysqli_error($conn));
-        }
-        mysqli_stmt_bind_param($stmt, "ssiss", $id_keluar, $id_produk, $qty, $tanggal, $id_karyawan);
-        if (!mysqli_stmt_execute($stmt)) {
-            throw new Exception("Error executing statement: " . mysqli_stmt_error($stmt));
-        }
-        mysqli_stmt_close($stmt);
     }
 
     // Insert aktifitas

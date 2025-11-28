@@ -64,23 +64,30 @@ $customer_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama");
                 <div class="mb-4">
                     <h3 class="text-lg font-semibold mb-3 text-gray-900">Pilih Produk</h3>
                     <div class="border border-gray-200 rounded-lg p-4 max-h-60 overflow-y-auto bg-gray-50">
-                        <?php while ($p = mysqli_fetch_assoc($produk_result)): ?>
-                            <div class="flex items-center justify-between p-2 border-b border-gray-200">
+                        <?php 
+                        mysqli_data_seek($produk_result, 0);
+                        while ($p = mysqli_fetch_assoc($produk_result)): 
+                            $stok = (int)$p['stok'];
+                            $maxQty = max(1, $stok); // Pastikan max minimal 1
+                        ?>
+                            <div class="flex items-center justify-between p-2 border-b border-gray-200 <?= $stok == 0 ? 'opacity-50' : ''; ?>">
                                 <div class="flex-1">
                                     <input type="checkbox" name="produk[]" value="<?= $p['id_produk']; ?>" 
                                         class="produk-checkbox" 
                                         data-harga="<?= $p['harga']; ?>"
                                         data-nama="<?= htmlspecialchars($p['nama_produk']); ?>"
-                                        data-stok="<?= $p['stok']; ?>"
+                                        data-stok="<?= $stok; ?>"
+                                        <?= $stok == 0 ? 'disabled' : ''; ?>
                                         onchange="toggleProduk(this)">
                                     <span class="ml-2 text-gray-900"><?= htmlspecialchars($p['nama_produk']); ?></span>
                                     <span class="text-gray-600 text-sm ml-2">
-                                        (Stok: <?= $p['stok']; ?>) - 
+                                        (Stok: <?= $stok; ?>) - 
                                         Rp <?= number_format($p['harga'], 0, ',', '.'); ?>
+                                        <?= $stok == 0 ? '<span class="text-red-600 font-semibold"> - Stok Habis</span>' : ''; ?>
                                     </span>
                                 </div>
                                 <input type="number" name="qty[<?= $p['id_produk']; ?>]" 
-                                    min="1" max="<?= $p['stok']; ?>" 
+                                    min="1" max="<?= $maxQty; ?>" 
                                     value="1" 
                                     class="hidden qty-input w-20 p-1 border border-gray-300 rounded-lg bg-white text-gray-900"
                                     data-produk="<?= $p['id_produk']; ?>"
@@ -100,7 +107,9 @@ $customer_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama");
                 </div>
 
                 <div class="flex gap-2">
-                    <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <button type="submit" id="submitBtn" 
+                        class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
+                        style="pointer-events: auto; z-index: 10; position: relative;">
                         Simpan Transaksi
                     </button>
                     <a href="../aktifitas.php?tab=transaksi" class="bg-gray-200 text-gray-800 px-6 py-2.5 rounded-lg hover:bg-gray-300 transition-all duration-200 font-medium">
@@ -114,33 +123,85 @@ $customer_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama");
     <script>
         let selectedProducts = {};
 
+        // Pastikan DOM sudah siap sebelum menambahkan event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            // Validasi form sebelum submit
+            const form = document.getElementById('transaksiForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const namaPembeli = document.getElementById('nama_pembeli').value.trim();
+                    const produkChecked = document.querySelectorAll('input[name="produk[]"]:checked');
+                    
+                    if (!namaPembeli) {
+                        e.preventDefault();
+                        alert('Nama pembeli wajib diisi!');
+                        return false;
+                    }
+                    
+                    if (produkChecked.length === 0) {
+                        e.preventDefault();
+                        alert('Pilih minimal 1 produk!');
+                        return false;
+                    }
+                    
+                    // Pastikan semua produk yang dipilih memiliki qty yang valid
+                    for (let checkbox of produkChecked) {
+                        const produkId = checkbox.value;
+                        const qtyInput = document.querySelector(`input[name="qty[${produkId}]"]`);
+                        if (!qtyInput || !qtyInput.value || parseInt(qtyInput.value) < 1) {
+                            e.preventDefault();
+                            alert('Pastikan semua produk yang dipilih memiliki jumlah yang valid!');
+                            return false;
+                        }
+                    }
+                });
+            }
+
+            // Update button state saat nama pembeli diubah
+            const namaPembeliInput = document.getElementById('nama_pembeli');
+            if (namaPembeliInput) {
+                namaPembeliInput.addEventListener('input', updateSubmitButton);
+            }
+        });
+
         // Update nama pembeli ketika customer dipilih
         function updateNamaPembeli() {
             const customerSelect = document.getElementById('id_customer');
             const namaPembeliInput = document.getElementById('nama_pembeli');
             
-            if (customerSelect.value) {
-                const selectedOption = customerSelect.options[customerSelect.selectedIndex];
-                const namaCustomer = selectedOption.getAttribute('data-nama');
-                if (namaCustomer) {
-                    namaPembeliInput.value = namaCustomer;
+            if (customerSelect && namaPembeliInput) {
+                if (customerSelect.value) {
+                    const selectedOption = customerSelect.options[customerSelect.selectedIndex];
+                    const namaCustomer = selectedOption.getAttribute('data-nama');
+                    if (namaCustomer) {
+                        namaPembeliInput.value = namaCustomer;
+                    }
+                } else {
+                    // Jika memilih "Umum", biarkan kosong untuk diisi manual
+                    namaPembeliInput.value = '';
                 }
-            } else {
-                // Jika memilih "Umum", biarkan kosong untuk diisi manual
-                namaPembeliInput.value = '';
+                updateSubmitButton();
             }
         }
 
         function toggleProduk(checkbox) {
             const produkId = checkbox.value;
             const qtyInput = document.querySelector(`input[name="qty[${produkId}]"]`);
+            const stok = parseInt(checkbox.dataset.stok);
+            
+            // Jangan izinkan memilih produk dengan stok 0
+            if (stok <= 0) {
+                checkbox.checked = false;
+                alert('Produk ini tidak tersedia karena stok habis!');
+                return;
+            }
             
             if (checkbox.checked) {
                 qtyInput.classList.remove('hidden');
                 selectedProducts[produkId] = {
                     nama: checkbox.dataset.nama,
                     harga: parseInt(checkbox.dataset.harga),
-                    stok: parseInt(checkbox.dataset.stok),
+                    stok: stok,
                     qty: 1
                 };
             } else {
@@ -150,6 +211,12 @@ $customer_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama");
             }
             updateSelectedList();
             updateTotal();
+            updateSubmitButton();
+        }
+
+        function updateSubmitButton() {
+            // Tombol tetap bisa diklik, validasi dilakukan saat submit
+            // Fungsi ini bisa digunakan untuk visual feedback jika diperlukan
         }
 
         function updateSelectedList() {
@@ -189,10 +256,15 @@ $customer_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama");
                 const hiddenInput = document.querySelector(`input[name="qty[${produkId}]"]`);
                 if (hiddenInput) hiddenInput.value = qty;
                 
+                // Update checkbox input juga
+                const checkboxInput = document.querySelector(`input[name="qty[${produkId}]"]`);
+                if (checkboxInput) checkboxInput.value = qty;
+                
                 updateSelectedList();
                 updateTotal();
             }
         }
+
 
         function updateTotal() {
             let total = 0;

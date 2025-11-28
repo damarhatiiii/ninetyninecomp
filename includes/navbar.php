@@ -59,7 +59,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <li>
             <a href="<?= BASE_PATH; ?>/pages/aktifitas.php"
                 class="block py-2 px-3 rounded-lg md:p-0 transition-colors
-                <?= in_array($current_page, ['aktifitas.php', 'transaksi.php', 'barang_masuk.php', 'barang_keluar.php', 'tambah_transaksi.php', 'tambah_barang_masuk.php', 'tambah_barang_keluar.php', 'detail_transaksi.php'])
+                <?= in_array($current_page, ['aktifitas.php', 'transaksi.php', 'barang_masuk.php', 'tambah_transaksi.php', 'tambah_barang_masuk.php', 'detail_transaksi.php'])
                     ? 'text-white bg-blue-600 md:bg-transparent md:text-blue-600 font-semibold'
                     : 'text-gray-700 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-600'; ?>">
                 Aktifitas
@@ -77,14 +77,46 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </a>
             </li>
 
-            <!-- Akun -->
+            <!-- Akun - Foto Profil -->
             <li>
+            <?php
+            // Ambil foto profil user yang sedang login
+            if (isset($_SESSION['id_karyawan'])) {
+                // Include db.php dengan path yang benar dari navbar
+                $navbar_db_path = __DIR__ . '/../config/db.php';
+                if (file_exists($navbar_db_path)) {
+                    include $navbar_db_path;
+                    $id_karyawan = $_SESSION['id_karyawan'];
+                    $user_query = mysqli_query($conn, "SELECT foto_profil, nama FROM karyawan WHERE id_karyawan = '$id_karyawan'");
+                    $user_data = mysqli_fetch_assoc($user_query);
+                    $foto_path = __DIR__ . '/../assets/profiles/' . ($user_data['foto_profil'] ?? '');
+                    $foto_profil = !empty($user_data['foto_profil']) && file_exists($foto_path)
+                        ? BASE_PATH . '/assets/profiles/' . $user_data['foto_profil'] 
+                        : '';
+                    $user_nama = $user_data['nama'] ?? $_SESSION['nama'] ?? 'User';
+                } else {
+                    $foto_profil = '';
+                    $user_nama = $_SESSION['nama'] ?? 'User';
+                }
+            } else {
+                $foto_profil = '';
+                $user_nama = 'User';
+            }
+            ?>
             <a href="<?= BASE_PATH; ?>/pages/master/karyawan.php"
                 class="block py-2 px-3 rounded-lg md:p-0 transition-colors
                 <?= $current_page == 'karyawan.php'
-                    ? 'text-white bg-blue-600 md:bg-transparent md:text-blue-600 font-semibold'
-                    : 'text-gray-700 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-600'; ?>">
-                Akun
+                    ? 'bg-blue-600 md:bg-transparent'
+                    : 'hover:bg-gray-100 md:hover:bg-transparent'; ?>"
+                title="Akun Saya">
+                <?php if ($foto_profil): ?>
+                    <img src="<?= $foto_profil; ?>" alt="<?= htmlspecialchars($user_nama); ?>" 
+                        class="w-8 h-8 rounded-full object-cover border-2 <?= $current_page == 'karyawan.php' ? 'border-blue-300' : 'border-gray-300'; ?>">
+                <?php else: ?>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold border-2 <?= $current_page == 'karyawan.php' ? 'border-blue-300' : 'border-gray-300'; ?>">
+                        <?= strtoupper(substr($user_nama, 0, 1)); ?>
+                    </div>
+                <?php endif; ?>
             </a>
             </li>
 

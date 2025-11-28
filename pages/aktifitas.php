@@ -28,16 +28,6 @@ if (!$barang_masuk_result) {
     $barang_masuk_result = false;
 }
 
-// Ambil data barang keluar
-$barang_keluar_result = mysqli_query($conn, "SELECT bk.*, p.nama_produk, k.nama as nama_karyawan
-                                FROM barang_keluar bk
-                                JOIN produk p ON bk.id_produk = p.id_produk
-                                JOIN karyawan k ON bk.id_karyawan = k.id_karyawan
-                                ORDER BY bk.tanggal DESC");
-if (!$barang_keluar_result) {
-    $barang_keluar_result = false;
-}
-
 // Ambil data aktifitas log
 $aktifitas_result = mysqli_query($conn, "SELECT a.*, k.nama as nama_karyawan
                                 FROM aktifitas a
@@ -76,10 +66,6 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                             class="inline-block bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 shadow-sm hover:shadow-md">
                             + Barang Masuk
                         </a>
-                        <a href="barang/tambah_barang_keluar.php" 
-                            class="inline-block bg-orange-600 hover:bg-orange-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 shadow-sm hover:shadow-md">
-                            + Barang Keluar
-                        </a>
                     </div>
                 </div>
 
@@ -102,12 +88,6 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                             <a href="?tab=barang_masuk" 
                                 class="inline-block p-4 border-b-2 rounded-t-lg <?= $active_tab == 'barang_masuk' ? 'text-blue-600 border-blue-600' : 'text-gray-500 border-transparent hover:text-gray-600 hover:border-gray-300'; ?>">
                                 Barang Masuk
-                            </a>
-                        </li>
-                        <li class="me-2">
-                            <a href="?tab=barang_keluar" 
-                                class="inline-block p-4 border-b-2 rounded-t-lg <?= $active_tab == 'barang_keluar' ? 'text-blue-600 border-blue-600' : 'text-gray-500 border-transparent hover:text-gray-600 hover:border-gray-300'; ?>">
-                                Barang Keluar
                             </a>
                         </li>
                         <li class="me-2">
@@ -208,46 +188,6 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                 </div>
                 <?php endif; ?>
 
-                <!-- Tab Content: Barang Keluar -->
-                <?php if ($active_tab == 'barang_keluar'): ?>
-                <div class="relative overflow-x-auto rounded-lg shadow-sm">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-700">
-                        <thead class="text-xs uppercase bg-gray-100 text-gray-700">
-                            <tr>
-                                <th class="px-6 py-3">No</th>
-                                <th class="px-6 py-3">ID</th>
-                                <th class="px-6 py-3">Tanggal</th>
-                                <th class="px-6 py-3">Produk</th>
-                                <th class="px-6 py-3">Jumlah</th>
-                                <th class="px-6 py-3">Karyawan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                            $no = 1;
-                            if ($barang_keluar_result && mysqli_num_rows($barang_keluar_result) > 0) {
-                                mysqli_data_seek($barang_keluar_result, 0);
-                                while ($row = mysqli_fetch_assoc($barang_keluar_result)): 
-                            ?>
-                            <tr class="bg-white border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4"><?= $no++; ?></td>
-                                <td class="px-6 py-4 font-medium"><?= htmlspecialchars($row['id_keluar']); ?></td>
-                                <td class="px-6 py-4"><?= date('d/m/Y', strtotime($row['tanggal'])); ?></td>
-                                <td class="px-6 py-4"><?= htmlspecialchars($row['nama_produk']); ?></td>
-                                <td class="px-6 py-4"><?= $row['jumlah_keluar']; ?></td>
-                                <td class="px-6 py-4"><?= htmlspecialchars($row['nama_karyawan']); ?></td>
-                            </tr>
-                            <?php 
-                                endwhile;
-                            } else {
-                                echo '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada data barang keluar</td></tr>';
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-                <?php endif; ?>
-
                 <!-- Tab Content: Log Aktifitas -->
                 <?php if ($active_tab == 'log'): ?>
                 <div class="relative overflow-x-auto rounded-lg shadow-sm">
@@ -272,11 +212,11 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                                         case 'barang_masuk':
                                             $badge_color = 'bg-green-100 text-green-800';
                                             break;
-                                        case 'barang_keluar':
-                                            $badge_color = 'bg-orange-100 text-orange-800';
-                                            break;
                                         case 'transaksi':
                                             $badge_color = 'bg-blue-100 text-blue-800';
+                                            break;
+                                        default:
+                                            $badge_color = 'bg-gray-100 text-gray-800';
                                             break;
                                     }
                             ?>
