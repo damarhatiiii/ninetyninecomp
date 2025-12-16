@@ -7,12 +7,12 @@
     <title>Login - Toko Komputer</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50">
 
     <div class="flex min-h-screen items-center justify-center px-4">
-        <div class="w-full max-w-sm bg-white shadow-lg rounded-xl p-6">
+        <div class="w-full max-w-sm bg-white shadow-sm border border-gray-200 rounded-xl p-6">
 
-            <h2 class="text-center text-2xl font-bold mb-6 text-gray-800">Login Karyawan</h2>
+            <h2 class="text-center text-2xl font-bold mb-6 text-gray-900">Login Karyawan</h2>
 
             <?php if (isset($_GET['error'])): ?>
                 <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
@@ -37,18 +37,18 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">ID Karyawan / Username / Nama</label>
                     <input name="username" type="text" required
                         placeholder="Masukkan ID, Username, atau Nama"
-                        class="w-full p-2 border border-gray-300 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
+                        class="w-full p-2.5 border border-gray-300 rounded-lg mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                     <p class="text-xs text-gray-500 mt-1">Anda bisa login menggunakan ID Karyawan, Username, atau Nama</p>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                     <input name="password" type="password" required
-                        class="w-full p-2 border border-gray-300 rounded-md mt-1 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
+                        class="w-full p-2.5 border border-gray-300 rounded-lg mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 </div>
 
                 <button type="submit"
-                    class="w-full bg-blue-700 text-white py-2 rounded-md hover:bg-blue-800 transition-colors font-medium">
+                    class="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Login
                 </button>
             </form>

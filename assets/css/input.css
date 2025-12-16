@@ -1,2 +1,42 @@
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
+
+/* Import Google Font - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* Custom Button Styles */
+.btn-primary {
+    @apply bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium 
+           hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
+           transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.btn-secondary {
+    @apply bg-gray-200 text-gray-800 px-6 py-2.5 rounded-lg font-medium 
+           hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 
+           transition-all duration-200;
+}
+
+.btn-danger {
+    @apply bg-red-600 text-white px-4 py-2 rounded-lg font-medium 
+           hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 
+           transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.btn-warning {
+    @apply bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium 
+           hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 
+           transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.btn-success {
+    @apply bg-green-600 text-white px-4 py-2 rounded-lg font-medium 
+           hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 
+           transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+/* Global white theme */
+body {
+    @apply bg-white text-gray-900;
+    font-family: 'Inter', sans-serif;
+}
