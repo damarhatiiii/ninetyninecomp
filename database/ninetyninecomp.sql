@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 16 Des 2025 pada 14.40
+-- Waktu pembuatan: 16 Des 2025 pada 15.40
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.0.30
 
@@ -50,7 +50,14 @@ INSERT INTO `aktifitas` (`id_aktifitas`, `id_karyawan`, `jenis_aktifitas`, `kete
 (10, 'KRY001', 'transaksi', 'Melakukan transaksi penjualan dengan total Rp 785.000', '2025-11-28 21:45:46'),
 (11, 'KRY001', 'barang_masuk', 'Menerima barang masuk: ADATA DDR4 XPG GAMMIX D35 WHITE 16GB (2X8GB) sebanyak 4 unit', '2025-11-29 03:48:55'),
 (12, 'KRY001', 'transaksi', 'Melakukan transaksi penjualan dengan total Rp 900.000', '2025-12-04 20:36:25'),
-(13, 'KRY001', 'barang_masuk', 'Menerima barang masuk: 1STPLAYER Gaming PSU DK60 600W 80+ Bronze sebanyak 6 unit', '2025-12-05 02:44:18');
+(13, 'KRY001', 'barang_masuk', 'Menerima barang masuk: 1STPLAYER Gaming PSU DK60 600W 80+ Bronze sebanyak 6 unit', '2025-12-05 02:44:18'),
+(14, 'KRY001', 'transaksi', 'Melakukan transaksi penjualan dengan total Rp 685.000', '2025-12-16 14:57:28'),
+(15, 'KRY001', 'transaksi', 'Melakukan transaksi penjualan dengan total Rp 3.140.000', '2025-12-16 15:03:44'),
+(16, 'KRY001', 'transaksi', 'Melakukan transaksi penjualan dengan total Rp 1.300.000', '2025-12-16 15:15:45'),
+(17, 'KRY001', 'transaksi', 'Melakukan transaksi penjualan dengan total Rp 785.000', '2025-12-16 15:16:08'),
+(18, 'KRY001', 'transaksi', 'Melakukan transaksi penjualan dengan total Rp 900.000', '2025-12-16 15:21:50'),
+(19, 'KRY001', 'transaksi', 'Melakukan transaksi penjualan dengan total Rp 900.000', '2025-12-16 15:25:17'),
+(20, 'KRY001', 'transaksi', 'Melakukan transaksi penjualan dengan total Rp 1.300.000', '2025-12-16 15:30:14');
 
 -- --------------------------------------------------------
 
@@ -129,7 +136,14 @@ INSERT INTO `detail_transaksi` (`id_detail`, `id_transaksi`, `id_produk`, `jumla
 ('DTL010', 'TRX006', 'RAM002', 1, 1300000),
 ('DTL011', 'TRX006', 'FAN009', 1, 702000),
 ('DTL012', 'TRX007', 'PSU002', 1, 785000),
-('DTL013', 'TRX008', 'RAM005', 1, 900000);
+('DTL013', 'TRX008', 'RAM005', 1, 900000),
+('DTL014', 'TRX009', 'PSU001', 1, 685000),
+('DTL015', 'TRX010', 'PSU002', 4, 3140000),
+('DTL016', 'TRX011', 'RAM002', 1, 1300000),
+('DTL017', 'TRX012', 'PSU002', 1, 785000),
+('DTL018', 'TRX013', 'RAM005', 1, 900000),
+('DTL019', 'TRX014', 'RAM005', 1, 900000),
+('DTL020', 'TRX015', 'RAM002', 1, 1300000);
 
 -- --------------------------------------------------------
 
@@ -229,7 +243,7 @@ INSERT INTO `produk` (`id_produk`, `nama_produk`, `id_kategori`, `merk`, `spesif
 ('FAN006', 'NZXT F120 RGB Core Triple Pack - Matte White', '8', 'NZXT', '120×120×26mm, 12v CASE, ARGB', 8, 995000),
 ('FAN007', 'NZXT F120 RGB Duo Triple Pack - Matte Black', '8', 'NZXT', '120×120×26mm, 12v CASE, ARGB', 7, 1301000),
 ('FAN008', 'Aerocool Mirage L360 360MM ARGB Liquid Cooler', '8', 'AeroCool', '394x120x27mm, 12v CPU, ARGB', 3, 1385000),
-('FAN009', 'Aigo DarkFlash AquaGlow DG240 Black', '8', 'Aigo', '277x120x27mm, 12v CPU, ARGB', 0, 702000),
+('FAN009', 'Aigo DarkFlash AquaGlow DG240 Black', '8', 'Aigo', '277x120x27mm, 12v CPU, ARGB', 5, 702000),
 ('FAN010', 'Aigo DarkFlash DX120 Twister V26 RGB - Black Edition', '8', 'Aigo', ' 75x75x53mm, 12v CPU, ARGB', 5, 526000),
 ('FAN011', 'Aigo DarkFlash Nebula DN360D ARGB - Black Edition', '8', 'Aigo', '397x120x27mm, 12v CPU, ARGB', 1, 1061000),
 ('FAN012', 'Asus ROG Ryujin III 360 ARGB Extreme Liquid Cooler', '8', 'ASUS', ' 3995x120x30 mm, 12v CPU, ARGB', 1, 6040000),
@@ -252,8 +266,8 @@ INSERT INTO `produk` (`id_produk`, `nama_produk`, `id_kategori`, `merk`, `spesif
 ('PRP003', 'AULA F75', '9', 'AULA', 'Reaper Switch + 81 Tombol, Gasket mount', 4, 739000),
 ('PRP004', 'AULA WIN60/WIN68', '9', 'AULA', 'Magnetic Switch, Gasket mount', 6, 779000),
 ('PRP005', 'Noir Timeless82 V+B552 Classic Edition 75%', '9', 'Noir', '81 Tombol, Gasket mount, LCD Display Screen', 4, 864000),
-('PSU001', '1STPLAYER Gaming PSU DK50 500W  80+ Bronze', '6', '1STPLAYER', '80+ Bronze, FULL MODULAR, 500-600W, ATX', 3, 685000),
-('PSU002', '1STPLAYER Gaming PSU DK60 600W 80+ Bronze', '6', '1STPLAYER', '80+ Bronze, FULL MODULAR, 500-600W, ATX', 7, 785000),
+('PSU001', '1STPLAYER Gaming PSU DK50 500W  80+ Bronze', '6', '1STPLAYER', '80+ Bronze, FULL MODULAR, 500-600W, ATX', 2, 685000),
+('PSU002', '1STPLAYER Gaming PSU DK60 600W 80+ Bronze', '6', '1STPLAYER', '80+ Bronze, FULL MODULAR, 500-600W, ATX', 2, 785000),
 ('PSU003', 'ADATA XPG PSU Core Reactor II 850w 80+ Gold', '6', 'ADATA', '80+ Gold, FULL MODULAR, 850W, ATX', 5, 1605000),
 ('PSU004', 'ADATA XPG PSU Core Reactor II 750w 80+ Gold', '6', 'ADATA', '80+ Gold, FULL MODULAR, 750W, ATX', 4, 1450000),
 ('PSU005', 'ASRock Challenger CL-750G 750W 80+ Gold', '6', 'ASRock', '80+ Gold, NON MODULAR, 750W, ATX', 5, 1285000),
@@ -266,10 +280,10 @@ INSERT INTO `produk` (`id_produk`, `nama_produk`, `id_kategori`, `merk`, `spesif
 ('PSU012', 'be quiet! PURE POWER 12 M 750W - 80+ Gold', '6', 'be quiet!', '80+ Gold, FULL MODULAR, 750W, ATX', 8, 1195000),
 ('PSU013', 'be quiet! PURE POWER 12 M 850W - 80+ Gold', '6', 'be quiet!', '80+ Gold, FULL MODULAR, 850W, ATX', 5, 2150000),
 ('RAM001', 'ADATA DDR4 XPG SPECTRIX D35G WHITE 32GB (2X16GB)', '4', 'ADATA', 'DDR4, 3200-3600MHz, RGB', 3, 1570000),
-('RAM002', 'ADATA DDR4 XPG GAMMIX D35 WHITE 16GB (2X8GB)', '4', 'ADATA', 'DDR4, 3200-3600MHz', 4, 1300000),
+('RAM002', 'ADATA DDR4 XPG GAMMIX D35 WHITE 16GB (2X8GB)', '4', 'ADATA', 'DDR4, 3200-3600MHz', 2, 1300000),
 ('RAM003', 'COLORFUL BATTLE AX DDR4 16GB', '4', 'COLORFUL', 'DDR4, 3200MHz', 4, 600000),
 ('RAM004', 'LEXAR DDR4 THOR 16GB (2X8GB)', '4', 'LEXAR', 'DDR4, 3200MHz', 6, 1100000),
-('RAM005', 'ACER PREDATOR VESTA RGB SILVER DDR4 16GB (2X8GB)', '4', 'ACER', 'DDR4, 3200-3600-4000MHz, RGB', 9, 900000),
+('RAM005', 'ACER PREDATOR VESTA RGB SILVER DDR4 16GB (2X8GB)', '4', 'ACER', 'DDR4, 3200-3600-4000MHz, RGB', 7, 900000),
 ('RAM006', 'GSKILL DDR5 TRIDENT Z5 RGB 32GB (2X16GB)', '4', 'GSKILL', 'DDR5, 5600MHz, RGB', 2, 1540000),
 ('RAM007', 'Apacer DDR5 NOX 16GB (2x8GB)', '4', 'Apacer', 'DDR5, 5600MHz', 4, 1200000),
 ('RAM008', 'Crucial Pro OC Black DDR5 32GB (2x16GB)', '4', 'Crucial', 'DDR5, 5600-6000MHz', 2, 2010000),
@@ -319,7 +333,6 @@ CREATE TABLE `transaksi` (
   `tanggal` date NOT NULL,
   `total` int(20) NOT NULL,
   `id_customer` varchar(255) DEFAULT NULL,
-  `nama_pembeli` varchar(20) DEFAULT NULL,
   `id_karyawan` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -327,15 +340,22 @@ CREATE TABLE `transaksi` (
 -- Dumping data untuk tabel `transaksi`
 --
 
-INSERT INTO `transaksi` (`id_transaksi`, `tanggal`, `total`, `id_customer`, `nama_pembeli`, `id_karyawan`) VALUES
-('TRX001', '2025-11-16', 1685000, NULL, NULL, ''),
-('TRX002', '2025-11-16', 1685000, NULL, NULL, ''),
-('TRX003', '2025-11-24', 1685000, NULL, 'DENI', 'KRY001'),
-('TRX004', '2025-11-24', 2002000, 'CUS001', 'Deni Setiawan', 'KRY001'),
-('TRX005', '2025-11-24', 1300000, NULL, 'mansurrr', 'KRY001'),
-('TRX006', '2025-11-24', 2002000, 'CUS001', 'Deni Setiawan', 'KRY001'),
-('TRX007', '2025-11-28', 785000, 'CUS001', 'Deni Setiawan', 'KRY001'),
-('TRX008', '2025-12-04', 900000, 'CUS001', 'Deni Setiawan', 'KRY001');
+INSERT INTO `transaksi` (`id_transaksi`, `tanggal`, `total`, `id_customer`, `id_karyawan`) VALUES
+('TRX001', '2025-11-16', 1685000, NULL, ''),
+('TRX002', '2025-11-16', 1685000, NULL, ''),
+('TRX003', '2025-11-24', 1685000, NULL, 'KRY001'),
+('TRX004', '2025-11-24', 2002000, 'CUS001', 'KRY001'),
+('TRX005', '2025-11-24', 1300000, NULL, 'KRY001'),
+('TRX006', '2025-11-24', 2002000, 'CUS001', 'KRY001'),
+('TRX007', '2025-11-28', 785000, 'CUS001', 'KRY001'),
+('TRX008', '2025-12-04', 900000, 'CUS001', 'KRY001'),
+('TRX009', '2025-12-16', 685000, NULL, 'KRY001'),
+('TRX010', '2025-12-16', 3140000, 'CUS003', 'KRY001'),
+('TRX011', '2025-12-16', 1300000, 'CUS002', 'KRY001'),
+('TRX012', '2025-12-16', 785000, 'CUS002', 'KRY001'),
+('TRX013', '2025-12-16', 900000, 'CUS001', 'KRY001'),
+('TRX014', '2025-12-16', 900000, 'CUS003', 'KRY001'),
+('TRX015', '2025-12-16', 1300000, 'CUS003', 'KRY001');
 
 --
 -- Indexes for dumped tables
@@ -414,7 +434,7 @@ ALTER TABLE `transaksi`
 -- AUTO_INCREMENT untuk tabel `aktifitas`
 --
 ALTER TABLE `aktifitas`
-  MODIFY `id_aktifitas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_aktifitas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
