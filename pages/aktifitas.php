@@ -38,6 +38,40 @@ if (!$aktifitas_result) {
     $aktifitas_result = false;
 }
 
+// Proses simpan produk baru (jika ada POST)
+$produk_success = false;
+$produk_error = '';
+if (isset($_POST['simpan_produk'])) {
+    $id_produk = mysqli_real_escape_string($conn, $_POST['id_produk']);
+    $nama_produk = mysqli_real_escape_string($conn, $_POST['nama_produk']);
+    $id_kategori = mysqli_real_escape_string($conn, $_POST['id_kategori']);
+    $merk = mysqli_real_escape_string($conn, $_POST['merk']);
+    $spesifikasi = mysqli_real_escape_string($conn, $_POST['spesifikasi']);
+    $harga = (int) $_POST['harga'];
+    $stok = (int) $_POST['stok'];
+
+    // Cek apakah ID produk sudah ada
+    $cek = mysqli_query($conn, "SELECT * FROM produk WHERE id_produk='$id_produk'");
+    if ($cek && mysqli_num_rows($cek) > 0) {
+        $produk_error = 'ID Produk sudah ada, gunakan ID lain!';
+    } else {
+        // Simpan produk baru
+        $insert = mysqli_query($conn, "INSERT INTO produk 
+            (id_produk, nama_produk, id_kategori, merk, spesifikasi, stok, harga) 
+            VALUES 
+            ('$id_produk', '$nama_produk', '$id_kategori', '$merk', '$spesifikasi', $stok, $harga)");
+
+        if ($insert) {
+            $produk_success = true;
+            // Reset form dengan redirect
+            header("Location: aktifitas.php?tab=tambah_produk&success=1");
+            exit;
+        } else {
+            $produk_error = 'Gagal menyimpan produk!';
+        }
+    }
+}
+
 // Tab aktif
 $active_tab = $_GET['tab'] ?? 'transaksi';
 ?>
@@ -66,6 +100,10 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                             class="inline-block bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 shadow-sm hover:shadow-md">
                             + Barang Masuk
                         </a>
+                        <a href="?tab=tambah_produk" 
+                            class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 shadow-sm hover:shadow-md">
+                            + Produk
+                        </a>
                     </div>
                 </div>
 
@@ -88,6 +126,12 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                             <a href="?tab=barang_masuk" 
                                 class="inline-block p-4 border-b-2 rounded-t-lg <?= $active_tab == 'barang_masuk' ? 'text-blue-600 border-blue-600' : 'text-gray-500 border-transparent hover:text-gray-600 hover:border-gray-300'; ?>">
                                 Barang Masuk
+                            </a>
+                        </li>
+                        <li class="me-2">
+                            <a href="?tab=tambah_produk" 
+                                class="inline-block p-4 border-b-2 rounded-t-lg <?= $active_tab == 'tambah_produk' ? 'text-blue-600 border-blue-600' : 'text-gray-500 border-transparent hover:text-gray-600 hover:border-gray-300'; ?>">
+                                Tambah Produk
                             </a>
                         </li>
                         <li class="me-2">
@@ -185,6 +229,113 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                             ?>
                         </tbody>
                     </table>
+                </div>
+                <?php endif; ?>
+
+                <!-- Tab Content: Tambah Produk -->
+                <?php if ($active_tab == 'tambah_produk'): ?>
+                <div class="bg-white rounded-lg p-6">
+                    <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+                        <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
+                            Produk berhasil disimpan!
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($produk_error)): ?>
+                        <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
+                            <?= htmlspecialchars($produk_error); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <form method="POST" class="space-y-5">
+                        <!-- ID Produk -->
+                        <div>
+                            <label for="id_produk" class="block mb-1 text-sm font-medium text-gray-700">
+                                ID Produk *
+                            </label>
+                            <input type="text" name="id_produk" id="id_produk" required
+                                value="<?= isset($_POST['id_produk']) ? htmlspecialchars($_POST['id_produk']) : ''; ?>"
+                                class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                        </div>
+
+                        <!-- Nama Produk -->
+                        <div>
+                            <label for="nama_produk" class="block mb-1 text-sm font-medium text-gray-700">
+                                Nama Produk *
+                            </label>
+                            <input type="text" name="nama_produk" id="nama_produk" required
+                                value="<?= isset($_POST['nama_produk']) ? htmlspecialchars($_POST['nama_produk']) : ''; ?>"
+                                class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                        </div>
+
+                        <!-- Kategori -->
+                        <div>
+                            <label for="id_kategori" class="block mb-1 text-sm font-medium text-gray-700">
+                                Kategori *
+                            </label>
+                            <select name="id_kategori" id="id_kategori" required
+                                class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                                <option value="" disabled selected>Pilih Kategori</option>
+                                <?php
+                                $kategoriQuery = mysqli_query($conn, "SELECT * FROM kategori ORDER BY nama_kategori ASC");
+                                while ($row = mysqli_fetch_assoc($kategoriQuery)) {
+                                    $selected = (isset($_POST['id_kategori']) && $_POST['id_kategori'] == $row['id_kategori']) ? 'selected' : '';
+                                    echo "<option value='{$row['id_kategori']}' $selected>{$row['nama_kategori']}</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <!-- Merk -->
+                        <div>
+                            <label for="merk" class="block mb-1 text-sm font-medium text-gray-700">
+                                Merk *
+                            </label>
+                            <input type="text" name="merk" id="merk" required
+                                value="<?= isset($_POST['merk']) ? htmlspecialchars($_POST['merk']) : ''; ?>"
+                                class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                        </div>
+
+                        <!-- Spesifikasi -->
+                        <div>
+                            <label for="spesifikasi" class="block mb-1 text-sm font-medium text-gray-700">
+                                Spesifikasi
+                            </label>
+                            <textarea name="spesifikasi" id="spesifikasi" rows="3"
+                                class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"><?= isset($_POST['spesifikasi']) ? htmlspecialchars($_POST['spesifikasi']) : ''; ?></textarea>
+                        </div>
+
+                        <!-- Harga & Stok -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="harga" class="block mb-1 text-sm font-medium text-gray-700">
+                                    Harga (Rp) *
+                                </label>
+                                <input type="number" name="harga" id="harga" required min="0"
+                                    value="<?= isset($_POST['harga']) ? htmlspecialchars($_POST['harga']) : ''; ?>"
+                                    class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                            </div>
+
+                            <div>
+                                <label for="stok" class="block mb-1 text-sm font-medium text-gray-700">
+                                    Stok *
+                                </label>
+                                <input type="number" name="stok" id="stok" required min="0"
+                                    value="<?= isset($_POST['stok']) ? htmlspecialchars($_POST['stok']) : ''; ?>"
+                                    class="w-full p-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 pt-4">
+                            <button type="submit" name="simpan_produk"
+                                class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg text-sm px-5 py-2.5 transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                                Simpan Produk
+                            </button>
+                            <button type="reset"
+                                class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg text-sm px-5 py-2.5 transition-all duration-200">
+                                Reset Form
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 <?php endif; ?>
 

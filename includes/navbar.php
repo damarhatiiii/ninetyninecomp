@@ -66,17 +66,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </a>
             </li>
 
-            <!-- Tambah -->
-            <li>
-            <a href="<?= BASE_PATH; ?>/pages/master/tambah.php"
-                class="block py-2 px-3 rounded-lg md:p-0 transition-colors
-                <?= $current_page == 'tambah.php'
-                    ? 'text-white bg-blue-600 md:bg-transparent md:text-blue-600 font-semibold'
-                    : 'text-gray-700 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-600'; ?>">
-                Tambah
-            </a>
-            </li>
-
             <!-- Akun - Foto Profil -->
             <li>
             <?php
