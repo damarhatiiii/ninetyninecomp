@@ -45,7 +45,7 @@ mysqli_stmt_execute($stmt2);
 $detail_result = mysqli_stmt_get_result($stmt2);
 
 // Tentukan nama pembeli
-$nama_pembeli = !empty($t['nama_pembeli']) ? $t['nama_pembeli'] : 'Umum';
+$nama_pembeli = !empty($t['nama_pembeli']) ? $t['nama_pembeli'] : '-';
 ?>
 <!DOCTYPE html>
 <html lang="id">

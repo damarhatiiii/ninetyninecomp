@@ -34,31 +34,20 @@ $customer_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama");
             
             <form method="POST" action="tambah_transaksi_proses.php" id="transaksiForm">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1 text-gray-700">Pilih Member (Customer)</label>
-                    <select name="id_customer" id="id_customer" 
-                        class="w-full p-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                        onchange="updateNamaPembeli()">
-                        <option value="">-- Pilih Customer / Umum --</option>
+                    <label class="block text-sm font-medium mb-1 text-gray-700">Pilih Member (Customer) *</label>
+                    <select name="id_customer" id="id_customer" required
+                        class="w-full p-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                        <option value="">-- Pilih Customer --</option>
                         <?php 
                         mysqli_data_seek($customer_result, 0);
                         while ($c = mysqli_fetch_assoc($customer_result)): 
                         ?>
-                            <option value="<?= htmlspecialchars($c['id_customer']); ?>" 
-                                data-nama="<?= htmlspecialchars($c['nama']); ?>">
+                            <option value="<?= htmlspecialchars($c['id_customer']); ?>">
                                 <?= htmlspecialchars($c['id_customer']); ?> - <?= htmlspecialchars($c['nama']); ?>
                             </option>
                         <?php endwhile; ?>
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">Pilih customer yang terdaftar atau biarkan kosong untuk pembeli umum</p>
-                </div>
-
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1 text-gray-700">Nama Pembeli *</label>
-                    <input type="text" name="nama_pembeli" id="nama_pembeli" 
-                        class="w-full p-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
-                        placeholder="Masukkan nama pembeli"
-                        required>
-                    <p class="text-xs text-gray-500 mt-1">Nama pembeli akan terisi otomatis jika memilih customer, atau isi manual untuk pembeli umum</p>
+                    <p class="text-xs text-gray-500 mt-1">Pilih customer yang terdaftar di database. Nama pembeli akan diambil dari data customer.</p>
                 </div>
 
                 <div class="mb-4">
@@ -129,12 +118,12 @@ $customer_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama");
             const form = document.getElementById('transaksiForm');
             if (form) {
                 form.addEventListener('submit', function(e) {
-                    const namaPembeli = document.getElementById('nama_pembeli').value.trim();
+                    const customerSelect = document.getElementById('id_customer');
                     const produkChecked = document.querySelectorAll('input[name="produk[]"]:checked');
                     
-                    if (!namaPembeli) {
+                    if (!customerSelect.value) {
                         e.preventDefault();
-                        alert('Nama pembeli wajib diisi!');
+                        alert('Pilih customer terlebih dahulu!');
                         return false;
                     }
                     
@@ -157,32 +146,7 @@ $customer_result = mysqli_query($conn, "SELECT * FROM customer ORDER BY nama");
                 });
             }
 
-            // Update button state saat nama pembeli diubah
-            const namaPembeliInput = document.getElementById('nama_pembeli');
-            if (namaPembeliInput) {
-                namaPembeliInput.addEventListener('input', updateSubmitButton);
-            }
         });
-
-        // Update nama pembeli ketika customer dipilih
-        function updateNamaPembeli() {
-            const customerSelect = document.getElementById('id_customer');
-            const namaPembeliInput = document.getElementById('nama_pembeli');
-            
-            if (customerSelect && namaPembeliInput) {
-                if (customerSelect.value) {
-                    const selectedOption = customerSelect.options[customerSelect.selectedIndex];
-                    const namaCustomer = selectedOption.getAttribute('data-nama');
-                    if (namaCustomer) {
-                        namaPembeliInput.value = namaCustomer;
-                    }
-                } else {
-                    // Jika memilih "Umum", biarkan kosong untuk diisi manual
-                    namaPembeliInput.value = '';
-                }
-                updateSubmitButton();
-            }
-        }
 
         function toggleProduk(checkbox) {
             const produkId = checkbox.value;

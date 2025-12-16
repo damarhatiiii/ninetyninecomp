@@ -7,13 +7,24 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
-// Ambil data transaksi
-$transaksi_result = mysqli_query($conn, "SELECT t.*, k.nama as nama_karyawan,
-                                COALESCE(t.nama_pembeli, 'Umum') as nama_pembeli_display
+// Ambil data transaksi (join dengan customer & karyawan, tapi tetap tampil walau data karyawan hilang)
+// Tidak lagi menggunakan kolom t.nama_pembeli agar tetap aman jika kolom tersebut dihapus dari database
+$transaksi_query = "SELECT 
+                                t.*, 
+                                COALESCE(k.nama, '-') AS nama_karyawan,
+                                COALESCE(c.nama, '-') AS nama_pembeli_display,
+                                c.id_customer,
+                                c.nama AS nama_customer
                                 FROM transaksi t 
-                                JOIN karyawan k ON t.id_karyawan = k.id_karyawan
-                                ORDER BY t.tanggal DESC");
+                                LEFT JOIN karyawan k ON t.id_karyawan = k.id_karyawan
+                                LEFT JOIN customer c ON t.id_customer = c.id_customer
+                                ORDER BY t.tanggal DESC";
+$transaksi_result = mysqli_query($conn, $transaksi_query);
 if (!$transaksi_result) {
+    // Jika ingin melihat detail error SQL, buka URL dengan parameter ?debug_transaksi=1
+    if (isset($_GET['debug_transaksi'])) {
+        die('Error query transaksi: ' . mysqli_error($conn));
+    }
     $transaksi_result = false;
 }
 
@@ -29,9 +40,12 @@ if (!$barang_masuk_result) {
 }
 
 // Ambil data aktifitas log
-$aktifitas_result = mysqli_query($conn, "SELECT a.*, k.nama as nama_karyawan
+// Gunakan LEFT JOIN supaya log tetap muncul meskipun data karyawan sudah dihapus/tidak cocok
+$aktifitas_result = mysqli_query($conn, "SELECT 
+                                a.*, 
+                                COALESCE(k.nama, '-') AS nama_karyawan
                                 FROM aktifitas a
-                                JOIN karyawan k ON a.id_karyawan = k.id_karyawan
+                                LEFT JOIN karyawan k ON a.id_karyawan = k.id_karyawan
                                 ORDER BY a.tanggal DESC
                                 LIMIT 100");
 if (!$aktifitas_result) {
@@ -169,7 +183,7 @@ $active_tab = $_GET['tab'] ?? 'transaksi';
                                 <td class="px-6 py-4"><?= $no++; ?></td>
                                 <td class="px-6 py-4 font-medium"><?= htmlspecialchars($row['id_transaksi']); ?></td>
                                 <td class="px-6 py-4"><?= date('d/m/Y', strtotime($row['tanggal'])); ?></td>
-                                <td class="px-6 py-4"><?= htmlspecialchars($row['nama_pembeli_display'] ?? 'Umum'); ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($row['nama_pembeli_display'] ?? '-'); ?></td>
                                 <td class="px-6 py-4"><?= htmlspecialchars($row['nama_karyawan']); ?></td>
                                 <td class="px-6 py-4 font-semibold text-green-600">
                                     Rp <?= number_format($row['total'], 0, ',', '.'); ?>

@@ -16,7 +16,11 @@ if (mysqli_num_rows($table_check) == 0) {
 }
 
 // Ambil data transaksi dengan prepared statement
-$stmt = mysqli_prepare($conn, "SELECT t.*, c.nama as nama_customer, k.nama as nama_karyawan 
+// Nama pembeli diambil dari tabel customer; tidak lagi bergantung pada kolom t.nama_pembeli
+$stmt = mysqli_prepare($conn, "SELECT 
+                                t.*, 
+                                COALESCE(c.nama, '-') AS nama_customer, 
+                                k.nama AS nama_karyawan 
                                 FROM transaksi t 
                                 LEFT JOIN customer c ON t.id_customer = c.id_customer
                                 JOIN karyawan k ON t.id_karyawan = k.id_karyawan
@@ -92,7 +96,7 @@ $detail = mysqli_stmt_get_result($stmt2);
                 </div>
                 <div>
                     <p class="text-sm text-gray-500">Nama Pembeli</p>
-                    <p class="font-semibold"><?= htmlspecialchars($t['nama_pembeli'] ?? 'Umum'); ?></p>
+                    <p class="font-semibold"><?= htmlspecialchars($t['nama_customer'] ?? '-'); ?></p>
                 </div>
             </div>
 

@@ -7,14 +7,22 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
-// Ambil data transaksi dengan join customer
-$result = mysqli_query($conn, "SELECT t.*, k.nama as nama_karyawan,
-                                COALESCE(c.nama, t.nama_pembeli, 'Umum') as nama_pembeli_display,
-                                c.id_customer, c.nama as nama_customer
+// Ambil data transaksi dengan join customer & karyawan (LEFT JOIN agar tetap tampil meski data karyawan/customer hilang)
+// Tidak lagi menggunakan kolom t.nama_pembeli agar tetap aman jika kolom tersebut dihapus dari database
+$query = "SELECT 
+                                t.*, 
+                                COALESCE(k.nama, '-') AS nama_karyawan,
+                                COALESCE(c.nama, '-') AS nama_pembeli_display,
+                                c.id_customer, 
+                                c.nama AS nama_customer
                                 FROM transaksi t 
-                                JOIN karyawan k ON t.id_karyawan = k.id_karyawan
+                                LEFT JOIN karyawan k ON t.id_karyawan = k.id_karyawan
                                 LEFT JOIN customer c ON t.id_customer = c.id_customer
-                                ORDER BY t.tanggal DESC");
+                                ORDER BY t.tanggal DESC";
+$result = mysqli_query($conn, $query);
+if (!$result && isset($_GET['debug_transaksi'])) {
+    die('Error query transaksi: ' . mysqli_error($conn));
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -67,11 +75,11 @@ $result = mysqli_query($conn, "SELECT t.*, k.nama as nama_karyawan,
                                         </span>
                                         <br>
                                         <span class="text-sm text-gray-600 dark:text-gray-400">
-                                            <?= htmlspecialchars($row['nama_pembeli_display'] ?? 'Umum'); ?>
+                                            <?= htmlspecialchars($row['nama_pembeli_display'] ?? '-'); ?>
                                         </span>
                                     <?php else: ?>
                                         <span class="text-gray-600 dark:text-gray-400">
-                                            <?= htmlspecialchars($row['nama_pembeli_display'] ?? 'Umum'); ?>
+                                            <?= htmlspecialchars($row['nama_pembeli_display'] ?? '-'); ?>
                                         </span>
                                     <?php endif; ?>
                                 </td>
