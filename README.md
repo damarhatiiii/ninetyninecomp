@@ -23,7 +23,7 @@ Sistem manajemen toko komputer berbasis web dengan PHP dan MySQL untuk mengelola
 - Hapus karyawan
 - Role: Admin dan Staf
 - Login tracking
-- **Sinkronisasi otomatis**: ID karyawan otomatis tersinkron di tabel `aktifitas`, `barang_keluar`, dan `transaksi`
+- **Sinkronisasi otomatis**: ID karyawan otomatis tersinkron di tabel `aktifitas` dan `transaksi`
 
 ### 4. **Manajemen Customer & Supplier**
 - Daftar customer
@@ -46,14 +46,7 @@ Sistem manajemen toko komputer berbasis web dengan PHP dan MySQL untuk mengelola
 - Tracking supplier
 - Log aktifitas otomatis
 
-### 7. **Barang Keluar**
-- Form pengeluaran barang
-- Validasi stok sebelum keluar
-- Update stok otomatis
-- Keterangan alasan keluar
-- Log aktifitas otomatis
-
-### 8. **Aktifitas (Dashboard Aktivitas)**
+### 7. **Aktifitas (Dashboard Aktivitas)**
 - **Tab Transaksi**: Daftar semua transaksi penjualan
 - **Tab Barang Masuk**: Daftar semua penerimaan barang
 - **Tab Barang Keluar**: Daftar semua pengeluaran barang
@@ -120,17 +113,10 @@ Sistem manajemen toko komputer berbasis web dengan PHP dan MySQL untuk mengelola
 - `tanggal` (DATE)
 - `id_karyawan` (VARCHAR) - Foreign Key
 
-#### `barang_keluar`
-- `id_keluar` (VARCHAR) - Primary Key, **Auto-generated** (format: `BK001`, `BK002`, dst.)
-- `id_produk` (VARCHAR) - Foreign Key
-- `jumlah_keluar` (INT)
-- `tanggal` (DATE)
-- `id_karyawan` (VARCHAR) - Foreign Key, **Auto-sinkron** dari session login
-
 #### `aktifitas`
 - `id_aktifitas` (INT) - Primary Key, Auto Increment
 - `id_karyawan` (VARCHAR) - Foreign Key, **Auto-sinkron** dari session login
-- `jenis_aktifitas` (ENUM: barang_masuk, barang_keluar, transaksi)
+- `jenis_aktifitas` (ENUM: barang_masuk, transaksi)
 - `keterangan` (TEXT)
 - `tanggal` (DATETIME)
 
@@ -177,9 +163,6 @@ toko_komputer/
 │   │   ├── barang_masuk.php
 │   │   ├── tambah_barang_masuk.php
 │   │   ├── tambah_barang_masuk_proses.php
-│   │   ├── barang_keluar.php
-│   │   ├── tambah_barang_keluar.php
-│   │   ├── tambah_barang_keluar_proses.php
 │   │   ├── update_stok.php
 │   │   └── update_stok_proses.php
 │   └── transaksi/
@@ -269,21 +252,11 @@ Sistem login mendukung 3 cara:
 6. Simpan
 7. Stok otomatis bertambah
 
-### Mengeluarkan Barang
-1. Klik menu **Aktifitas**
-2. Klik tombol **+ Barang Keluar**
-3. Pilih produk
-4. Masukkan jumlah
-5. Tambahkan keterangan (opsional)
-6. Simpan
-7. Stok otomatis berkurang
-
 ### Melihat Aktifitas
 1. Klik menu **Aktifitas**
 2. Pilih tab yang diinginkan:
    - **Transaksi**: Lihat semua transaksi penjualan
    - **Barang Masuk**: Lihat semua penerimaan barang
-   - **Barang Keluar**: Lihat semua pengeluaran barang
    - **Log Aktifitas**: Lihat log aktivitas karyawan
 
 ## 🔧 Fitur Teknis
@@ -295,21 +268,19 @@ Sistem otomatis generate ID untuk:
 - **Customer**: `CUS001`, `CUS002`, dst. (saat tambah customer atau transaksi dengan pembeli baru)
 - **Supplier**: `SUP001`, `SUP002`, dst.
 - **Barang Masuk**: `BM001`, `BM002`, dst.
-- **Barang Keluar**: `BK001`, `BK002`, dst.
 - **Detail Transaksi**: `DTL001`, `DTL002`, dst.
 
 ### Auto-Sinkronisasi ID
 Sistem otomatis menyinkronkan ID di berbagai tabel:
-- **`id_karyawan`**: Otomatis tersinkron di tabel `aktifitas`, `barang_keluar`, dan `transaksi` dari session login
+- **`id_karyawan`**: Otomatis tersinkron di tabel `aktifitas` dan `transaksi` dari session login
 - **`id_customer`**: Otomatis tersinkron di tabel `transaksi` (auto-generate jika customer baru)
 
 ### Auto-Update Stok
 - **Transaksi**: Stok berkurang otomatis
 - **Barang Masuk**: Stok bertambah otomatis
-- **Barang Keluar**: Stok berkurang otomatis
 
 ### Auto-Log Aktifitas
-Setiap aktivitas (transaksi, barang masuk, barang keluar) otomatis tercatat di tabel `aktifitas` dengan informasi:
+Setiap aktivitas (transaksi, barang masuk) otomatis tercatat di tabel `aktifitas` dengan informasi:
 - Karyawan yang melakukan
 - Jenis aktivitas
 - Keterangan detail
@@ -357,7 +328,7 @@ Setiap aktivitas (transaksi, barang masuk, barang keluar) otomatis tercatat di t
 ### Update Terbaru - Auto-Generate & Sinkronisasi ID
 - ✅ **Auto-generate ID Karyawan**: Format `KRY001`, `KRY002`, dst. saat tambah karyawan baru
 - ✅ **Auto-generate ID Customer**: Format `CUS001`, `CUS002`, dst. saat transaksi dengan pembeli baru
-- ✅ **Sinkronisasi `id_karyawan`**: Otomatis tersinkron di tabel `aktifitas`, `barang_keluar`, dan `transaksi` dari session login
+- ✅ **Sinkronisasi `id_karyawan`**: Otomatis tersinkron di tabel `aktifitas` dan `transaksi` dari session login
 - ✅ **Sinkronisasi `id_customer`**: Otomatis tersinkron di tabel `transaksi` (auto-generate jika customer baru)
 - ✅ Perbaikan sistem login untuk support format ID baru (KRY001, dst.)
 
@@ -366,7 +337,6 @@ Setiap aktivitas (transaksi, barang masuk, barang keluar) otomatis tercatat di t
 - ✅ Perbaikan sistem login (support ID/Username/Nama)
 - ✅ Penambahan fitur transaksi lengkap
 - ✅ Penambahan fitur barang masuk
-- ✅ Penambahan fitur barang keluar
 - ✅ Penambahan fitur aktifitas dengan tab
 - ✅ Integrasi semua fitur ke halaman Aktifitas
 - ✅ Penyesuaian dengan struktur database yang ada
