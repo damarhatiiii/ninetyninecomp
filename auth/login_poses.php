@@ -57,24 +57,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Cek password
-    // Cek apakah password di-hash atau plain text (untuk kompatibilitas)
+    // Support kedua format: hash (backward compatibility) dan plain text (default)
     $password_valid = false;
     
-    // Cek dengan password_verify (jika di-hash)
+    // Cek dengan password_verify (jika di-hash - untuk backward compatibility)
     if (password_verify($password, $data['password'])) {
         $password_valid = true;
     } 
-    // Fallback: cek plain text (untuk data lama yang belum di-hash)
+    // Cek plain text (default - tidak di-hash)
     elseif ($data['password'] === $password) {
         $password_valid = true;
-        // Update password ke hash untuk keamanan
-        $new_hash = password_hash($password, PASSWORD_DEFAULT);
-        $update_stmt = mysqli_prepare($conn, "UPDATE karyawan SET password = ? WHERE id_karyawan = ?");
-        if ($update_stmt) {
-            mysqli_stmt_bind_param($update_stmt, "si", $new_hash, $data['id_karyawan']);
-            mysqli_stmt_execute($update_stmt);
-            mysqli_stmt_close($update_stmt);
-        }
     }
     
     if ($password_valid) {

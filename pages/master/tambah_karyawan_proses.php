@@ -53,16 +53,14 @@ mysqli_stmt_close($cek_username);
 // Generate ID karyawan otomatis
 $id_karyawan = generateIdKaryawan($conn);
 
-// Hash password
-$password_hash = password_hash($password, PASSWORD_DEFAULT);
-
+// Simpan password sebagai plain text (tidak di-hash)
 // Insert ke database menggunakan prepared statement
 $stmt = mysqli_prepare($conn, "INSERT INTO karyawan (id_karyawan, nama, username, password, role) VALUES (?, ?, ?, ?, ?)");
 if (!$stmt) {
     die("Error preparing statement: " . mysqli_error($conn));
 }
 
-mysqli_stmt_bind_param($stmt, "sssss", $id_karyawan, $nama, $username, $password_hash, $role);
+mysqli_stmt_bind_param($stmt, "sssss", $id_karyawan, $nama, $username, $password, $role);
 
 if (mysqli_stmt_execute($stmt)) {
     mysqli_stmt_close($stmt);

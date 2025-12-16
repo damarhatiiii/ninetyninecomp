@@ -25,10 +25,10 @@ $result = mysqli_query($conn, "SELECT t.*, k.nama as nama_karyawan,
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+    <body class="bg-gray-50 min-h-screen flex flex-col">
     <?php include '../../includes/navbar.php'; ?>
-    
     <div class="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen pb-20">
-        <div class="max-w-7xl mx-auto">
+        <div class="p-6 flex-grow">
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-6">
                 <div class="flex items-center justify-between border-b pb-3 mb-6">
                     <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Data Transaksi</h2>
@@ -91,7 +91,6 @@ $result = mysqli_query($conn, "SELECT t.*, k.nama as nama_karyawan,
             </div>
         </div>
     </div>
-
     <?php include '../../includes/footbar.php'; ?>
 </body>
 </html>

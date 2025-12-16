@@ -50,9 +50,6 @@ $barang_masuk_query = mysqli_query($conn, "SELECT COALESCE(SUM(jumlah_masuk), 0)
 $barang_masuk_data = mysqli_fetch_assoc($barang_masuk_query);
 $total_masuk = (int)$barang_masuk_data['total'];
 
-$barang_keluar_query = mysqli_query($conn, "SELECT COALESCE(SUM(jumlah_keluar), 0) as total FROM barang_keluar WHERE DATE_FORMAT(tanggal, '%Y-%m') = '$current_month'");
-$barang_keluar_data = mysqli_fetch_assoc($barang_keluar_query);
-$total_keluar = (int)$barang_keluar_data['total'];
 
 // Query untuk produk terlaris (top 5)
 $top_products_query = mysqli_query($conn, "

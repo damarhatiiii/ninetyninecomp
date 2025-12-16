@@ -54,10 +54,5 @@ function generateIdMasuk($conn) {
     return generateId($conn, 'BM', 'barang_masuk', 'id_masuk');
 }
 
-// Generate ID untuk barang keluar
-function generateIdKeluar($conn) {
-    return generateId($conn, 'BK', 'barang_keluar', 'id_keluar');
-}
-
 ?>
 

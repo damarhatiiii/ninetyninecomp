@@ -60,7 +60,7 @@ $detail = mysqli_stmt_get_result($stmt2);
     <title>Detail Transaksi</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900">
+<body class="bg-white">
     <?php include '../../includes/navbar.php'; ?>
     
     <div class="p-6 pb-20">
